@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Hazards
+  - OneWayPlatform
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Ground
+  - Player
+  - Enemy
+  - EnemyAttackHitbox
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: background-1
+    uniqueID: 3631010647
+    locked: 0
+  - name: background-2
+    uniqueID: 4088115117
+    locked: 0
+  - name: midground-1
+    uniqueID: 3910714747
+    locked: 0
+  - name: midground-2
+    uniqueID: 2173374107
+    locked: 0
+  - name: foreground-1
+    uniqueID: 2971254457
+    locked: 0
+  - name: foreground-2
+    uniqueID: 3012704649
+    locked: 0
+  - name: foreground-3
+    uniqueID: 3505969495
+    locked: 0
