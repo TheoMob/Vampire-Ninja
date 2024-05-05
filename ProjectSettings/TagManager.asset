@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Hazards
   - OneWayPlatform
+  - Ground
+  - Body
   layers:
   - Default
   - TransparentFX

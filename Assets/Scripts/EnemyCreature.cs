@@ -29,7 +29,7 @@ public class EnemyCreature : MonoBehaviour
   [SerializeField] private float attackDuration = 2f;
   [SerializeField] private float attackPreparationTime = 0.5f;
   [SerializeField] private float attackCooldown = 2f;
-  private float lastAttackTime = 0f;
+  [HideInInspector] public bool isAttackOnCooldown;
 
   private const string IDLE_ANIMATION = "EnemyIdle";
   private const string DEATH_ANIMATION = "EnemyDeath";
@@ -47,12 +47,19 @@ public class EnemyCreature : MonoBehaviour
     _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
     _enemyAI = GetComponent<EnemyAI>();
 
-    sprRenderer = GetComponent<SpriteRenderer>();
-    attackCollider = transform.GetChild(0).GetComponent<CircleCollider2D>();
-    rb = GetComponent<Rigidbody2D>();
-    anim = GetComponent<Animator>();
+    foreach(Transform child in transform)
+    {
+      if (child.CompareTag("Body"))
+      {
+        sprRenderer = child.GetComponent<SpriteRenderer>();
+        rb = child.GetComponent<Rigidbody2D>();
+        anim = child.GetComponent<Animator>();
+        attackCollider = child.GetChild(0).GetComponent<CircleCollider2D>();
+        break;
+      }
+    }
 
-    //UpdateAnimClipTimes();
+    UpdateAnimClipTimes();
   }
 
   private void Update()
@@ -62,12 +69,12 @@ public class EnemyCreature : MonoBehaviour
 
   private void InvertSprite()
   {
-    float scale = -math.sign(rb.velocity.x);
+    // float scale = -math.sign(rb.velocity.x);
 
-    if (scale == 0 || math.abs(rb.velocity.x) < .01f)
-      return;
+    // if (math.abs(rb.velocity.x) < .2f)
+    //   return;
 
-    transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * scale, transform.localScale.y);
+    // transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * scale, transform.localScale.y);
   }
 
   private void KillCreature()
@@ -105,16 +112,22 @@ public class EnemyCreature : MonoBehaviour
 
   public void HandleAttack()
   {
-    bool isAttackOnCooldown = lastAttackTime + attackCooldown >= Time.time;
     if (isAttacking || isAttackOnCooldown || isCreatureDead)
       return;
 
     isAttacking = true;
-    lastAttackTime = Time.time;
     sprRenderer.color = Color.yellow;
     anim.Play(ATTACK_PREPARATION_ANIMATION);
     Invoke(nameof(Attack), attackPreparationTime);
     Invoke(nameof(AttackEnd), attackDuration + attackPreparationTime);
+    StartCoroutine(setAttackCooldown());
+  }
+
+  IEnumerator setAttackCooldown()
+  {
+    isAttackOnCooldown = true;
+    yield return new WaitForSeconds(attackCooldown);
+    isAttackOnCooldown = false;
   }
 
   private void Attack()

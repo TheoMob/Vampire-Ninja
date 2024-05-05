@@ -7,11 +7,7 @@ using UnityEngine;
 namespace TarodevController
 {
     /// <summary>
-    /// Hey!
-    /// Tarodev here. I built this controller as there was a severe lack of quality & free 2D controllers out there.
-    /// I have a premium version on Patreon, which has every feature you'd expect from a polished controller. Link: https://www.patreon.com/tarodev
-    /// You can play and compete for best times here: https://tarodev.itch.io/extended-ultimate-2d-controller
-    /// If you hve any questions or would like to brag about your score, come to discord: https://discord.gg/tarodev
+    /// Mob/Theo here, The base of this script was build on the TaroDev controller script, be sure to thank him and include in the credits when the game launches https://discord.gg/tarodev
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class PlayerController : MonoBehaviour, IPlayerController
@@ -138,15 +134,7 @@ namespace TarodevController
             bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, LayerMask.GetMask("Ground"));
             bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, LayerMask.GetMask("Ground"));
 
-            _isWalled = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.right * Math.Sign(transform.localScale.x), _stats.WallSlideDistance, LayerMask.GetMask("Ground"));
-
-            #if UNITY_EDITOR
-            Vector2 lookingDirection = Vector2.right * Math.Sign(transform.localScale.x);
-            Color drawColor = _isWalled ? Color.green : Color.red;
-            Vector2 startPoint = _col.bounds.center;
-            Vector2 endPoint = startPoint + lookingDirection;
-            Debug.DrawLine(startPoint, endPoint, drawColor);
-            #endif
+            _isWalled = CheckIfItsWalled();
 
             // Hit a Ceiling
             if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
@@ -381,6 +369,32 @@ namespace TarodevController
         public bool _wallJumping;
         private float wallJumpDirection;
         private float wallJumpBufferTimer;
+
+        private bool CheckIfItsWalled()
+        {
+          Vector2 lookingDirection = Vector2.right * Math.Sign(transform.localScale.x) * (_col.size.x / 1.9f);
+          Vector2 middlePos = _col.bounds.center;
+          Vector2 topPos = new Vector2(_col.bounds.center.x, _col.bounds.center.y + transform.localScale.y / 1.5f);
+          Vector2 bottomPos = new Vector2(_col.bounds.center.x, _col.bounds.center.y - transform.localScale.y / 1.5f);
+
+          bool middleCheck = Physics2D.Linecast(middlePos, middlePos + lookingDirection, LayerMask.GetMask("Ground"));
+          bool topCheck = Physics2D.Linecast(topPos, topPos + lookingDirection, LayerMask.GetMask("Ground"));
+          bool bottomCheck = Physics2D.Linecast(bottomPos, bottomPos + lookingDirection, LayerMask.GetMask("Ground"));
+
+          #if UNITY_EDITOR // this is just so the lines can be visualized as Gizmos while playing
+          Color drawColor = middleCheck ? Color.green : Color.red;
+          Debug.DrawLine(middlePos, middlePos + lookingDirection, drawColor);
+
+          drawColor = topCheck ? Color.green : Color.red;
+          Debug.DrawLine(topPos, topPos + lookingDirection, drawColor);
+
+          drawColor = bottomCheck ? Color.green : Color.red;
+          Debug.DrawLine(bottomPos, bottomPos + lookingDirection, drawColor);
+          #endif
+
+          return middleCheck && topCheck && bottomCheck;
+        }
+
         private void WallSlide()
         {
           if (_isWalled && !_grounded && _frameInput.Move.x != 0)
