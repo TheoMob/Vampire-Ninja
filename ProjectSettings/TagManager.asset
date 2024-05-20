@@ -5,9 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Hazards
-  - OneWayPlatform
   - Ground
   - Body
+  - PlayerAttackHitbox
   layers:
   - Default
   - TransparentFX
@@ -19,8 +19,8 @@ TagManager:
   - Player
   - Enemy
   - EnemyAttackHitbox
-  - 
-  - 
+  - PlayerAttackHitBox
+  - OneWayPlatform
   - 
   - 
   - 
@@ -50,6 +50,15 @@ TagManager:
     locked: 0
   - name: background-2
     uniqueID: 4088115117
+    locked: 0
+  - name: background-3
+    uniqueID: 2802243593
+    locked: 0
+  - name: background-4
+    uniqueID: 588932285
+    locked: 0
+  - name: Tilemap background
+    uniqueID: 2128096249
     locked: 0
   - name: midground-1
     uniqueID: 3910714747

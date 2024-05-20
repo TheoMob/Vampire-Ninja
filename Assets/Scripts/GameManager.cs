@@ -1,12 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IPlayerState;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
   public static event Action PlayerDefeatedEvent;
+  private PlayerStateController _playerStateController;
+
+  private void Awake()
+  {
+    _playerStateController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateController>();
+  }
   private void Update()
   {
     if (Input.GetKeyDown(KeyCode.R))
@@ -18,6 +25,8 @@ public class GameManager : MonoBehaviour
 
   public void PlayerDefeated()
   {
+    _playerStateController.isDefeated = true;
+
     if (PlayerDefeatedEvent != null)
       PlayerDefeatedEvent();
   }
@@ -34,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     Time.timeScale = Mathf.Max(1 - slowIntensity, 0.1f);
 
-    Invoke(nameof(ReturnTimeToNormal), slowDuration);
+    Invoke(nameof(ReturnTimeToNormal), slowDuration * Time.timeScale);
   }
 
   private void ReturnTimeToNormal()

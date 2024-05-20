@@ -72,14 +72,8 @@ namespace TarodevController
         [Tooltip("Time between pressing the dash and actually dashing, helps with input buffering")]
         public float DashInputDelay = 0.2f;
 
-        [Tooltip("Max speed while dashing")]
-        public float MaxDashSpeed = 50f;
-
         [Tooltip("Time between the end of the dash and the return of the gravity")]
         public float DashGravityReturnDelay = 0.15f;
-
-        [Tooltip("Time to return the control to the player")]
-        public float DashTimeToReturnControls = 0.15f;
 
         [Tooltip("Slow on time after the dash")]
         public float DashSlowOnTime = 0.9f;

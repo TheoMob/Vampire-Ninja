@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4031997196249426984}
-  - component: {fileID: 4736022329351167959}
   - component: {fileID: 6804053175192935833}
   m_Layer: 8
   m_Name: opossum
@@ -26,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240206728906947269}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -87.4, y: -2.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34,29 +33,6 @@ Transform:
   - {fileID: 2267155476333119750}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4736022329351167959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240206728906947269}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4c0e26288c8e0e4c9f65e20e11688bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  delayToReappear: 2
-  slowOnKill: 0.3
-  slowDuration: 0.5
-  shakeIntensity: 5
-  duration: 0.1
-  attackSpeed: 25
-  attackDuration: 2
-  attackPreparationTime: 0.5
-  attackCooldown: 2
-  isAttackOnCooldown: 0
-  isAttacking: 0
 --- !u!114 &6804053175192935833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,20 +46,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 300
-  nextWaypointDistance: 1
   startSeekingDistance: 10
   stopSeekingDistance: 15
   attackingDistance: 5
-  dontPatrol: 0
+  attackRange: 5
   patrolPointGizmos:
   - {x: -7.61, y: 0}
   - {x: 17.25, y: 0}
   timeIdleInEachPatrolPoint: 1
   isCreatureDead: 0
-  seekType: 1
-  jumpNodeHeightRequirement: 0.8
+  aIState: 0
+  seekType: 2
+  jumpNodeHeightRequirement: 2
   jumpForce: 15
   jumpCooldown: 1
+  desiredDistanceFromTarget: 5
+  distanceInterval: 2
 --- !u!1 &3517937114290355456
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,6 +76,7 @@ GameObject:
   - component: {fileID: 996849442107624014}
   - component: {fileID: 3688264762307865120}
   - component: {fileID: 3687686109382519723}
+  - component: {fileID: 4342021063695452418}
   m_Layer: 8
   m_Name: body
   m_TagString: Body
@@ -114,7 +93,7 @@ Transform:
   m_GameObject: {fileID: 3517937114290355456}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3.47, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -185,7 +164,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 6
+  m_Mass: 1
   m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 5
@@ -294,6 +273,30 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!114 &4342021063695452418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3517937114290355456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61351c90b0e8384c8995202520a9d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notPassiveMob: 1
+  delayToReappear: 2
+  slowOnKill: 0.3
+  slowDuration: 0.5
+  shakeIntensity: 5
+  duration: 0.1
+  attackSpeed: 5
+  attackDuration: 2
+  attackPreparationTime: 0.5
+  attackCooldown: 2
+  isAttackOnCooldown: 0
+  isAttacking: 0
 --- !u!1 &4165699623847220943
 GameObject:
   m_ObjectHideFlags: 0

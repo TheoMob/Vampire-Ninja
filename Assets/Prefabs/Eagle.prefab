@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6132728998215450765}
   - component: {fileID: 7751179001365001384}
   - component: {fileID: 9036403855730633895}
+  - component: {fileID: 3386078081134613067}
   m_Layer: 8
   m_Name: body
   m_TagString: Body
@@ -210,6 +211,30 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: 1
+--- !u!114 &3386078081134613067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3522112886562741754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e61351c90b0e8384c8995202520a9d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  passiveMob: 0
+  delayToReappear: 2
+  slowOnKill: 0.3
+  slowDuration: 0.5
+  shakeIntensity: 5
+  duration: 0.1
+  attackSpeed: 5
+  attackDuration: 2
+  attackPreparationTime: 0.5
+  attackCooldown: 2
+  isAttackOnCooldown: 0
+  isAttacking: 0
 --- !u!1 &7925593745135931942
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,7 +311,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2203651104777720995}
-  - component: {fileID: 8542165295154923122}
   - component: {fileID: 7477374261279207761}
   m_Layer: 8
   m_Name: Eagle
@@ -294,7 +318,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2203651104777720995
 Transform:
   m_ObjectHideFlags: 0
@@ -303,7 +327,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8746630186329941172}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -59.19, y: 6.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -311,29 +335,6 @@ Transform:
   - {fileID: 2748075075697777300}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8542165295154923122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8746630186329941172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4c0e26288c8e0e4c9f65e20e11688bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  delayToReappear: 2
-  slowOnKill: 0.0001
-  slowDuration: 0.1
-  shakeIntensity: 5
-  duration: 0.2
-  attackSpeed: 50
-  attackDuration: 0.8
-  attackPreparationTime: 0.5
-  attackCooldown: 2
-  isAttackOnCooldown: 0
-  isAttacking: 0
 --- !u!114 &7477374261279207761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,11 +348,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 2000
-  nextWaypointDistance: 1
   startSeekingDistance: 10
   stopSeekingDistance: 15
   attackingDistance: 5
-  dontPatrol: 0
+  attackRange: 5
   patrolPointGizmos:
   - {x: 0, y: 0}
   - {x: 15, y: 0}
@@ -359,7 +359,10 @@ MonoBehaviour:
   - {x: 0, y: -6}
   timeIdleInEachPatrolPoint: 1
   isCreatureDead: 0
+  aIState: 0
   seekType: 0
   jumpNodeHeightRequirement: 0.8
   jumpForce: 100
   jumpCooldown: 1
+  desiredDistanceFromTarget: 5
+  distanceInterval: 2

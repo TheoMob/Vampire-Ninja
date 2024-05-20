@@ -35,15 +35,13 @@ MonoBehaviour:
   DashDuration: 0.25
   DashCooldown: 1
   DashBuffer: 0
-  DashInputDelay: 0.08
-  MaxDashSpeed: 20
-  DashGravityReturnDelay: 0
-  DashTimeToReturnControls: 0.4
+  DashInputDelay: 0.1
+  DashGravityReturnDelay: 0.2
   DashSlowOnTime: 0.9
   DashShakeIntensity: 3
   DashShakeDuration: 0.05
-  WallSlidingSpeed: 1
-  WallSlideDistance: 0.05
+  WallSlidingSpeed: 8
+  WallSlideDistance: 0.1
   WallJumpPower: {x: 18, y: 20}
-  WallJumpDuration: 0.1
+  WallJumpDuration: 0.15
   WallJumpBuffer: 0.3

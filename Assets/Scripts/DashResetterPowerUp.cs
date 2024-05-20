@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using IPlayerState;
 using TarodevController;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class DashResetterPowerUp : MonoBehaviour
 {
-  private PlayerController _playerController;
+  private PlayerStateController _playerStateController;
   [SerializeField] private float delayToReappear = 2f;
   private SpriteRenderer sprRenderer;
   private BoxCollider2D col;
@@ -14,7 +15,7 @@ public class DashResetterPowerUp : MonoBehaviour
 
   private void Awake()
   {
-    _playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+    _playerStateController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateController>();
     sprRenderer = GetComponent<SpriteRenderer>();
     col = GetComponent<BoxCollider2D>();
     anim = GetComponent<Animator>();
@@ -25,7 +26,7 @@ public class DashResetterPowerUp : MonoBehaviour
     if (col.gameObject.tag != "Player")
       return;
 
-    _playerController._dashReset = true;
+    _playerStateController.ResetDash();
 
     SetComponentsActive(false);
     StartCoroutine(Reappear());

@@ -45,7 +45,6 @@ public class Projectile : MonoBehaviour
 
     if (sprRenderer.color.a <= 0.1f)
     {
-      Debug.Log("DESTROOOOOOOOOOOOY");
       Destroy(gameObject);
     }
   }
