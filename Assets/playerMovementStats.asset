@@ -23,23 +23,23 @@ MonoBehaviour:
   GroundDeceleration: 150
   AirDeceleration: 150
   GroundingForce: -1.5
-  GrounderDistance: 0.05
+  GrounderDistance: 0.25
   JumpPower: 25
   MaxFallSpeed: 40
   FallAcceleration: 65
   JumpEndEarlyGravityModifier: 2.2
   CoyoteTime: 0.15
   JumpBuffer: 0.2
-  DashSpeed: 30
-  DashVerticalSpeed: 25
+  DashSpeed: 28
+  DashVerticalSpeed: 15
   DashDuration: 0.25
-  DashCooldown: 1
+  DashCooldown: 0.5
   DashBuffer: 0
   DashInputDelay: 0.1
   DashGravityReturnDelay: 0.2
-  DashSlowOnTime: 0.9
-  DashShakeIntensity: 3
-  DashShakeDuration: 0.05
+  DashSlowOnTime: 0
+  DashShakeIntensity: 0
+  DashShakeDuration: 0
   WallSlidingSpeed: 8
   WallSlideDistance: 0.1
   WallJumpPower: {x: 18, y: 20}

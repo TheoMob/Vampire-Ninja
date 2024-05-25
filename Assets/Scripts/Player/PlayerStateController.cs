@@ -28,12 +28,7 @@ namespace IPlayerState
       playerState = RefreshState();
 
       if (isDefeated)
-      {
-        if (_rb.velocity.y > 0)
-          _rb.velocity = Vector2.zero;
-        else
-          _rb.velocity = new Vector2(0, _rb.velocity.y);
-      }
+        _rb.velocity = Vector2.zero;
     }
 
     public PlayerState GetCurrentState()
@@ -106,6 +101,11 @@ namespace IPlayerState
     public void ResetDash()
     {
       _playerMovementController._dashReset = true;
+    }
+
+    public DashState getDashState()
+    {
+      return _playerMovementController.dashState;
     }
 
     private bool CheckIfItsWalled()

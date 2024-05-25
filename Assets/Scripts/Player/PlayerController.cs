@@ -123,9 +123,12 @@ namespace TarodevController
             if (ceilingHit)
               _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
 
+            
+
             // Landed on the Ground
             if (!_grounded && groundHit)
             {
+                _dashReset = true;
                 _grounded = true;
                 _coyoteUsable = true;
                 _bufferedJumpUsable = true;
@@ -251,7 +254,7 @@ namespace TarodevController
         #region Dash
 
         public DashState dashState;
-        private bool _groundHitAfterDash = true; // not used for now
+        private bool _groundHitAfterDash = false; // not used for now
         public bool _dashReset = false;
         private bool _dashPressed = false;
         private float _timeDashWasPressed;
@@ -287,20 +290,22 @@ namespace TarodevController
             break;
 
             case DashState.Dashing:
-              //_dashPressed = false;
+              _dashPressed = false;
             break;
 
             case DashState.Cooldown:
               //_dashPressed = false;
              if (_dashReset)
+             {
               dashState = DashState.Ready;
+             }
             break;
           }
         }
 
         private void DashCooldownHandler()
         {
-          if (dashState == DashState.Cooldown)
+          if (dashState == DashState.Cooldown && _grounded)
             dashState = DashState.Ready;
         }
 

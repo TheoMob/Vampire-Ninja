@@ -87,7 +87,7 @@ public class PlayerCombatController : MonoBehaviour
 
   private void OnTriggerEnter2D(Collider2D col)
   {
-    if (col.gameObject.tag == "Hazards")
+    if (col.gameObject.CompareTag("Hazards"))
     {
       PlayerLosesHealth(1);
     }

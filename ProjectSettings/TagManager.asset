@@ -8,6 +8,8 @@ TagManager:
   - Ground
   - Body
   - PlayerAttackHitbox
+  - Enemy
+  - EnemyHitbox
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - EnemyAttackHitbox
+  - 
   - PlayerAttackHitBox
   - OneWayPlatform
   - 
@@ -74,4 +76,7 @@ TagManager:
     locked: 0
   - name: foreground-3
     uniqueID: 3505969495
+    locked: 0
+  - name: Tilemap foreground
+    uniqueID: 1848698081
     locked: 0

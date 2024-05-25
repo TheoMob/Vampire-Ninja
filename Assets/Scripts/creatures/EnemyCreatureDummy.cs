@@ -12,7 +12,6 @@ public class EnemyCreatureDummy : EnemyCreature
 
   [Header("damage and hit variables")]
   [SerializeField] private float timeToCountAsHitCombo = 1f;
-  [SerializeField] private bool takeHit = false; // for debug purposes only
   private int hitComboIndex;
 
   protected override void Awake()
@@ -24,11 +23,6 @@ public class EnemyCreatureDummy : EnemyCreature
   protected override void Update()
   {
     base.Update();
-    if (takeHit)
-    {
-      OnCreatureHit();
-      takeHit = false;
-    }
   }
   protected override void OnCreatureHit()
   {
@@ -37,14 +31,13 @@ public class EnemyCreatureDummy : EnemyCreature
 
     hitComboIndex += 1;
 
+    _playerStateController.ResetDash();
     if (hitComboIndex % 3 == 0)
       anim.Play(DUMMY_HIT_ANIMATION_2);
     else
       anim.Play(DUMMY_HIT_ANIMATION_1);
 
     StartCoroutine(hitComboManager(hitComboIndex));
-
-    _playerStateController.ResetDash();
   }
 
   protected override void HandleAnimation()

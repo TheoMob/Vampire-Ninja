@@ -3,7 +3,7 @@ guid: 8c00e7a48f3f11d42a983ce61b64c5a7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -395,6 +395,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: beta_ninja_2_13
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 0
+        width: 32
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b35a0dd7317e604d84ca01898131d13
+      internalID: 1356191086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -411,6 +432,7 @@ TextureImporter:
       beta_ninja_2_10: 1246573557
       beta_ninja_2_11: 1039561366
       beta_ninja_2_12: -2037399206
+      beta_ninja_2_13: 1356191086
       beta_ninja_2_2: -433362257
       beta_ninja_2_3: 1919837800
       beta_ninja_2_4: -2037731126

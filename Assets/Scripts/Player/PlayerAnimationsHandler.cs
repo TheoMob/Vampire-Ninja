@@ -62,6 +62,8 @@ public class PlayerAnimationsHandler : MonoBehaviour
 
     if (useDashEffects)
       HandleDashParticles();
+
+    AnimateDashAvailability();
   }
 
   private void InvertSprite()
@@ -72,6 +74,14 @@ public class PlayerAnimationsHandler : MonoBehaviour
       return;
 
     transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * scale, transform.localScale.y);
+  }
+
+  private void AnimateDashAvailability()
+  {
+    if (_stateController.getDashState() == DashState.Cooldown)
+      playerSR.color = Color.red;
+    else
+      playerSR.color = Color.white;
   }
 
   private void AnimationChooser()
