@@ -23,7 +23,6 @@ public class PlayerAnimationsHandler : MonoBehaviour
   private const string PLAYER_CROUCH = "PlayerCrouch";
   private const string PLAYER_ATTACK_1 = "PlayerAttack1";
   private PlayerStateController _stateController;
-  private Rigidbody2D playerRB;
   private Animator playerAnimator;
   private SpriteRenderer playerSR;
 
@@ -36,24 +35,20 @@ public class PlayerAnimationsHandler : MonoBehaviour
   void Start()
   {
     playerAnimator = GetComponent<Animator>();
-    playerRB = GetComponent<Rigidbody2D>();
     playerSR = GetComponent<SpriteRenderer>();
     _stateController = GetComponent<PlayerStateController>();
 
     if (useDashEffects)
       dashParticleRendered = dashAfterImageObject.GetComponent<ParticleSystemRenderer>();
-
-    GameManager.PlayerDefeatedEvent += PlayDefeatedAnimation;
   }
 
-  void OnDestroy()
-  {
-    GameManager.PlayerDefeatedEvent -= PlayDefeatedAnimation;
-  }
   void Update()
   {
     if (_stateController.GetCurrentState() == PlayerState.Defeated)
+    {
+      playerAnimator.Play(PLAYER_DEFEATED);
       return;
+    }
 
     AnimationChooser();
 
@@ -63,7 +58,7 @@ public class PlayerAnimationsHandler : MonoBehaviour
     if (useDashEffects)
       HandleDashParticles();
 
-    AnimateDashAvailability();
+    AnimateDashAvailability(); // so the player has a visual cue to wheter the dash is available or not
   }
 
   private void InvertSprite()
@@ -87,76 +82,63 @@ public class PlayerAnimationsHandler : MonoBehaviour
   private void AnimationChooser()
   {
     PlayerState currentState = _stateController.GetCurrentState();
-    AnimatorStateInfo currentAnimationClip = playerAnimator.GetCurrentAnimatorStateInfo(0);
+    JumpState jumpState = _stateController.getJumpState();
+    String currentAnimation = PLAYER_IDLE;
 
-    if (currentState == PlayerState.Attacking)
+    switch(currentState)
     {
-      playerAnimator.Play(PLAYER_ATTACK_1);
-      return;
+      case PlayerState.Defeated:
+        currentAnimation = PLAYER_DEFEATED;
+      break;
+
+      case PlayerState.Attacking:
+        currentAnimation = PLAYER_ATTACK_1;
+      break;
+
+      case PlayerState.WallSliding:
+        currentAnimation = PLAYER_WALL_SLIDE;
+      break;
+
+      case PlayerState.Dashing:
+        currentAnimation = _stateController.IsDashVertical()? PLAYER_DASH_VERTICAL : PLAYER_DASH_HORIZONTAL;
+      break;
+
+      case PlayerState.Jumping:
+        switch(jumpState)
+        {
+          case JumpState.Ascending:
+            currentAnimation = PLAYER_JUMP_UP;
+          break;
+          case JumpState.Transition:
+            currentAnimation = PLAYER_JUMP_TRANSITION;
+          break;
+          case JumpState.Idle:
+            currentAnimation = PLAYER_JUMP_DOWN;
+          break;
+        }
+      break;
+
+      case PlayerState.WallJumping:
+        currentAnimation = PLAYER_JUMP_UP;
+      break;
+
+      case PlayerState.Crouching:
+        currentAnimation = PLAYER_CROUCH;
+      break;
+
+      case PlayerState.Running:
+        currentAnimation = PLAYER_WALK;
+      break;
+
+      case PlayerState.Idle:
+        currentAnimation = PLAYER_IDLE;
+      break;
     }
 
-    if (currentState == PlayerState.WallSliding)
-    {
-      playerAnimator.Play(PLAYER_WALL_SLIDE);
-      return;
-    }
-
-    if (currentState == PlayerState.Dashing)
-    {
-      if (_stateController.IsDashVertical())
-        playerAnimator.Play(PLAYER_DASH_VERTICAL);
-      else
-        playerAnimator.Play(PLAYER_DASH_HORIZONTAL);
-
-      return;
-    }
-
-    if (currentState == PlayerState.Jumping || currentState == PlayerState.WallJumping)
-    {
-      bool correctAnimationTransition = currentAnimationClip.IsName(PLAYER_JUMP_UP) || currentAnimationClip.IsName(PLAYER_JUMP_TRANSITION);
-
-      if (correctAnimationTransition && playerRB.velocity.y <= 0.1f)
-      {
-        playerAnimator.Play(PLAYER_JUMP_TRANSITION);
-        return;
-      }
-
-      if (playerRB.velocity.y > 0)
-      {
-        playerAnimator.Play(PLAYER_JUMP_UP);
-        return;
-      }
-
-      if (playerRB.velocity.y <= 0)
-      {
-        playerAnimator.Play(PLAYER_JUMP_DOWN);
-        return;
-      }
-    }
-
-    if (currentState == PlayerState.Crouching)
-    {
-      playerAnimator.Play(PLAYER_CROUCH);
-      return;
-    }
-
-    if (playerRB.velocity.x != 0) // test if the player is not moving and also not pressing to move
-    {
-      playerAnimator.Play(PLAYER_WALK);
-      return;
-    }
-
-    if (playerRB.velocity.x == 0 && _stateController.GetFrameInput().Move.x == 0)
-      playerAnimator.Play(PLAYER_IDLE);
-  }
-
-  private void PlayDefeatedAnimation()
-  {
-    playerAnimator.Play(PLAYER_DEFEATED);
+    playerAnimator.Play(currentAnimation);
   }
 
   #region Effects
-
   private void HandleDashParticles()
   {
     bool isDashing = _stateController.GetCurrentState() == PlayerState.Dashing;

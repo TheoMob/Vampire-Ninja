@@ -56,8 +56,6 @@ public class BaseCreature : MonoBehaviour
     {
         if (!isImmortal)
             enemyCurrentHealth = enemyCurrentHealth - 1;
-
-        _playerStateController.ResetDash();
         
         if (enemyCurrentHealth <= 0)
         {

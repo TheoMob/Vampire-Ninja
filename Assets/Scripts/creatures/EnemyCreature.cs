@@ -19,14 +19,7 @@ public class EnemyCreature : MonoBehaviour
   [SerializeField] protected bool passiveMob = true;
 
   [SerializeField] protected bool reappear = false;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float delayToReappear = 2f;
-
-  // shake and slow
-  [SerializeField] protected bool shakeAndSlowOnHit = false;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float slowOnKill = 0.3f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float slowDuration = 0.5f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float shakeIntensity = 5f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float duration = 0.1f;
+  [ShowIf("reappear")] [SerializeField] protected float delayToReappear = 2f;
 
   // attack variables
   [HideIf("passiveMob")] [SerializeField] protected float attackSpeed = 5f;
@@ -110,16 +103,9 @@ public class EnemyCreature : MonoBehaviour
 
   protected virtual void OnCreatureHit()
   {
-    if (shakeAndSlowOnHit)
-    {
-      _gameManager.ShakeCamera(shakeIntensity, duration);
-      _gameManager.SlowTime(slowOnKill, slowDuration);
-    }
-
     anim.Play(DEATH_ANIMATION);
     isCreatureDead = true;
     bodyHitboxCollider.enabled = false;
-    _playerStateController.ResetDash();
     Invoke(nameof(DeactivateSpriteRenderer), deathAnimDuration);
 
     if (reappear)

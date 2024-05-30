@@ -11,9 +11,10 @@ public class parallax : MonoBehaviour
         initialPosition = transform.position;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float distance = cameraTarget.position.x * parallaxSpeed;
-        transform.position = new Vector2( initialPosition.x + distance, transform.position.y);
+        Vector2 aimPosition = new Vector2(initialPosition.x + distance, transform.position.y);
+        transform.position = aimPosition;
     }
 }

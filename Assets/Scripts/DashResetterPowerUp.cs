@@ -26,8 +26,6 @@ public class DashResetterPowerUp : MonoBehaviour
     if (col.gameObject.tag != "Player")
       return;
 
-    _playerStateController.ResetDash();
-
     SetComponentsActive(false);
     StartCoroutine(Reappear());
   }

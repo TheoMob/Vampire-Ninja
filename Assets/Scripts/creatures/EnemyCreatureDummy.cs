@@ -26,12 +26,8 @@ public class EnemyCreatureDummy : EnemyCreature
   }
   protected override void OnCreatureHit()
   {
-    _gameManager.ShakeCamera(shakeIntensity, duration);
-    _gameManager.SlowTime(slowOnKill, slowDuration);
-
     hitComboIndex += 1;
 
-    _playerStateController.ResetDash();
     if (hitComboIndex % 3 == 0)
       anim.Play(DUMMY_HIT_ANIMATION_2);
     else

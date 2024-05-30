@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TarodevController
+namespace MovementStatsController
 {
     [CreateAssetMenu]
     public class ScriptableStats : ScriptableObject
@@ -53,6 +53,8 @@ namespace TarodevController
         [Tooltip("The amount of time we buffer a jump. This allows jump input before actually hitting the ground")]
         public float JumpBuffer = .2f;
 
+        [Tooltip("The amount of time the player is going to stay in the max point of his jump")]
+        public float JumpTransitionDuration = .2f;
         // my own edits
         [Header("DASH")] [Tooltip("The immediate velocity applied when dashing")]
         public float DashSpeed = 20;
@@ -74,15 +76,6 @@ namespace TarodevController
 
         [Tooltip("Time between the end of the dash and the return of the gravity")]
         public float DashGravityReturnDelay = 0.15f;
-
-        [Tooltip("Slow on time after the dash")]
-        public float DashSlowOnTime = 0.9f;
-
-        [Tooltip("Dash Shake Intensity on the screen")]
-        public float DashShakeIntensity = 0.9f;
-
-        [Tooltip("Dash Shake Duration on the screen")]
-        public float DashShakeDuration = 0.9f;
 
         [Header("WALLSLIDE")] [Tooltip("The Speed that the character slips from the wall")]
         public float WallSlidingSpeed = 1f;

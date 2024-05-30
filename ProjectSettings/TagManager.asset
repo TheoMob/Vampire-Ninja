@@ -10,6 +10,7 @@ TagManager:
   - PlayerAttackHitbox
   - Enemy
   - EnemyHitbox
+  - BounceBack
   layers:
   - Default
   - TransparentFX
@@ -67,6 +68,9 @@ TagManager:
     locked: 0
   - name: midground-2
     uniqueID: 2173374107
+    locked: 0
+  - name: midground-3
+    uniqueID: 1095406901
     locked: 0
   - name: foreground-1
     uniqueID: 2971254457
