@@ -23,17 +23,12 @@ namespace IPlayerState
       _rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
       playerState = RefreshState();
 
       if (isDefeated)
-      {
-        if (_rb.velocity.y > 0)
-          _rb.velocity = Vector2.zero;
-        else
-          _rb.velocity = new Vector2(0, _rb.velocity.y);
-      }
+        _rb.velocity = Vector2.zero;
     }
 
     public PlayerState GetCurrentState()
@@ -67,17 +62,17 @@ namespace IPlayerState
       if (dashing)
         return PlayerState.Dashing;
 
+      if (!grounded && wallJumping)
+        return PlayerState.WallJumping;
+
       if (isTouchingWall && !grounded && frameInput.Move.x != 0)
         return PlayerState.WallSliding;
 
       if (grounded && pressingDown)
         return PlayerState.Crouching;
 
-      if (grounded && !pressingDown)
-        return PlayerState.Idle;
-
-      if (!grounded && wallJumping)
-        return PlayerState.WallJumping;
+      if (grounded && !pressingDown && frameInput.Move.x != 0)
+        return PlayerState.Running;
 
       if (!grounded && !wallJumping)
         return PlayerState.Jumping;
@@ -103,10 +98,16 @@ namespace IPlayerState
       return _playerMovementController.isDashVertical;
     }
 
-    public void ResetDash()
+    public DashState getDashState()
     {
-      _playerMovementController._dashReset = true;
+      return _playerMovementController.dashState;
     }
+
+    public JumpState getJumpState()
+    {
+      return _playerMovementController.jumpState;
+    }
+
 
     private bool CheckIfItsWalled()
     {
@@ -129,13 +130,14 @@ namespace IPlayerState
       drawColor = bottomCheck ? Color.green : Color.red;
       Debug.DrawLine(bottomPos, bottomPos + lookingDirection, drawColor);
       #endif
-
-      return middleCheck && topCheck && bottomCheck;
+      
+      return middleCheck && bottomCheck && topCheck;
     }
 
     public enum PlayerState
     {
       Idle,
+      Running,
       Crouching,
       Attacking,
       Dashing,

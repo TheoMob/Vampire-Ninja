@@ -32,43 +32,7 @@ public class PlayerCombatController : MonoBehaviour
 
   private void Update()
   {
-    if (Input.GetKeyDown(KeyCode.J))
-    {
-      HandleAttack();
-    }
-  }
 
-  private void HandleAttack()
-  {
-    if (CheckIfCanAttack() == false)
-      return;
-
-    rb.velocity = Vector2.zero;
-
-    StartCoroutine(HandleAttackDuration());
-    StartCoroutine(HandleAttackCooldown());
-  }
-
-  IEnumerator HandleAttackDuration()
-  {
-    isAttacking = true;
-    yield return new WaitForSeconds(attackDuration);
-    isAttacking = false;
-  }
-
-  IEnumerator HandleAttackCooldown()
-  {
-    isAttackOnCooldown = true;
-    yield return new WaitForSeconds(attackCoolDown);
-    isAttackOnCooldown = false;
-  }
-
-  private bool CheckIfCanAttack()
-  {
-    if (_stateController.GetCurrentState() != PlayerState.Idle || isAttackOnCooldown) // adjust later to accept air attack
-      return false;
-
-    return true;
   }
 
   public void PlayerLosesHealth(int dmgPoints)
@@ -82,12 +46,11 @@ public class PlayerCombatController : MonoBehaviour
   private void PlayerDeath()
   {
     _gameManager.PlayerDefeated();
-    _stateController.isDefeated = true;
   }
 
   private void OnTriggerEnter2D(Collider2D col)
   {
-    if (col.gameObject.tag == "Hazards")
+    if (col.CompareTag("Hazards"))
     {
       PlayerLosesHealth(1);
     }

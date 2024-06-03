@@ -50,9 +50,9 @@ MonoBehaviour:
   stopSeekingDistance: 15
   attackingDistance: 10
   attackRange: 5
+  patrolBetweenPositions: 0
   patrolPointGizmos: []
   timeIdleInEachPatrolPoint: 1
-  isCreatureDead: 0
   aIState: 0
   seekType: 2
   jumpNodeHeightRequirement: 0.8
@@ -60,6 +60,73 @@ MonoBehaviour:
   jumpCooldown: 1
   desiredDistanceFromTarget: 8
   distanceInterval: 2
+--- !u!1 &4445956949072712354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8176474393533462772}
+  - component: {fileID: 8720873697153643628}
+  m_Layer: 9
+  m_Name: damageHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8176474393533462772
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4445956949072712354}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -0.5, y: 0.5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8635483376105469773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &8720873697153643628
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4445956949072712354}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.08800125, y: -0.08800435}
+  m_Size: {x: 0.85201263, y: 1.7520373}
+  m_Direction: 0
 --- !u!1 &5982155081705232951
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +161,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: -2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8176474393533462772}
   m_Father: {fileID: 9625829416573014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5542950601949919420
@@ -282,18 +350,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10dd1bfb5e02374989f29ad6f2a4ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passiveMob: 0
+  notPassiveMob: 1
   delayToReappear: 2
+  shakeAndSlowOnHit: 0
   slowOnKill: 0.3
   slowDuration: 0.5
   shakeIntensity: 5
   duration: 0.1
-  attackSpeed: 5
+  attackSpeed: 10
   attackDuration: 2
   attackPreparationTime: 0.5
-  attackCooldown: 2
+  attackCooldown: 4
   isAttackOnCooldown: 0
+  addHitEffect: 0
+  hitSmoke: {fileID: 0}
   isAttacking: 0
-  projectilePrefab: {fileID: 0}
-  delayToShootProjectile: 0
-  projectileSpawnPosition: {x: 0, y: 0}
+  isCreatureDead: 0
+  projectilePrefab: {fileID: 7702055716079108630, guid: f8964040012200a45ae8ab4f2da5241f, type: 3}
+  delayToShootProjectile: 0.3
+  projectileSpawnPosition: {x: -2, y: 0}

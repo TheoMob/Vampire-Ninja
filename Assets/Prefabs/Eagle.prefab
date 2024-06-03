@@ -223,8 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61351c90b0e8384c8995202520a9d27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passiveMob: 0
+  notPassiveMob: 1
   delayToReappear: 2
+  shakeAndSlowOnHit: 0
   slowOnKill: 0.3
   slowDuration: 0.5
   shakeIntensity: 5
@@ -234,7 +235,10 @@ MonoBehaviour:
   attackPreparationTime: 0.5
   attackCooldown: 2
   isAttackOnCooldown: 0
+  addHitEffect: 0
+  hitSmoke: {fileID: 0}
   isAttacking: 0
+  isCreatureDead: 0
 --- !u!1 &7925593745135931942
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +250,7 @@ GameObject:
   - component: {fileID: 5137850047655030143}
   - component: {fileID: 1163577391487256825}
   m_Layer: 9
-  m_Name: attackhitBox
+  m_Name: damageHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -352,13 +356,13 @@ MonoBehaviour:
   stopSeekingDistance: 15
   attackingDistance: 5
   attackRange: 5
+  patrolBetweenPositions: 0
   patrolPointGizmos:
   - {x: 0, y: 0}
   - {x: 15, y: 0}
   - {x: 15, y: -6}
   - {x: 0, y: -6}
   timeIdleInEachPatrolPoint: 1
-  isCreatureDead: 0
   aIState: 0
   seekType: 0
   jumpNodeHeightRequirement: 0.8

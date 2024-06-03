@@ -3,6 +3,7 @@ using System.Collections;
 using IPlayerState;
 using UnityEngine;
 using static IPlayerState.PlayerStateController;
+using MovementStatsController;
 
 namespace TarodevController
 {
@@ -13,6 +14,7 @@ namespace TarodevController
     public class PlayerController : MonoBehaviour, IPlayerController
     {
         [SerializeField] private ScriptableStats _stats;
+        private PlayerState currentState;
 
         private PlayerStateController _stateController;
         private Rigidbody2D _rb;
@@ -46,16 +48,16 @@ namespace TarodevController
         }
         private void Update()
         {
-          if (_stateController.GetCurrentState() == PlayerState.Defeated)
+          if (currentState == PlayerState.Defeated)
             return;
 
+          currentState = _stateController.GetCurrentState();
           _time += Time.deltaTime;
           GatherInput();
         }
 
         private void FixedUpdate()
         {
-          PlayerState currentState = _stateController.GetCurrentState();
           if (currentState == PlayerState.Defeated || currentState == PlayerState.Attacking)
             return;
 
@@ -121,11 +123,12 @@ namespace TarodevController
 
             // Hit a Ceiling
             if (ceilingHit)
-              _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
+              _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);  
 
             // Landed on the Ground
             if (!_grounded && groundHit)
             {
+                _dashReset = true;
                 _grounded = true;
                 _coyoteUsable = true;
                 _bufferedJumpUsable = true;
@@ -133,6 +136,8 @@ namespace TarodevController
                 GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
 
                _dashPressed = false; // so it doesnt dash after landing if the dash was pressed in the air
+
+               jumpState = JumpState.Idle;
             }
             // Left the Ground
             else if (_grounded && !groundHit)
@@ -150,6 +155,7 @@ namespace TarodevController
 
         #region Jumping
 
+        public JumpState jumpState = JumpState.Idle;
         public bool _jumpToConsume;
         private bool _bufferedJumpUsable;
         private bool _endedJumpEarly;
@@ -157,17 +163,29 @@ namespace TarodevController
         private float _timeJumpWasPressed;
 
         private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
-        private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime && _stateController.GetCurrentState() != PlayerState.Crouching;
+        private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime && currentState != PlayerState.Crouching;
         private void HandleJump()
         {
+          TestJumpState();
+
           _endedJumpEarly = ShouldEndJumpEarly();
+
+          if (_frameInput.Move.y < 0)
+          {
+            _endedJumpEarly = false;
+            _timeJumpWasPressed = 0;
+            _bufferedJumpUsable = false;
+            _coyoteUsable = false;
+            _jumpToConsume = false;
+            return;
+          }
 
           if (!_jumpToConsume && !HasBufferedJump)
             return;
 
           if (_grounded || CanUseCoyote) ExecuteJump();
 
-          if (_stateController.GetCurrentState() == PlayerState.WallSliding || wallJumpBufferTimer > 0f)
+          if (currentState == PlayerState.WallSliding || wallJumpBufferTimer > 0f)
             return;
 
           _jumpToConsume = false;
@@ -175,7 +193,6 @@ namespace TarodevController
 
         private bool ShouldEndJumpEarly()
         {
-          PlayerState currentState = _stateController.GetCurrentState();
           bool improperState = currentState == PlayerState.WallSliding || currentState == PlayerState.WallJumping ? true : false;
 
           return !_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0
@@ -190,6 +207,23 @@ namespace TarodevController
             _coyoteUsable = false;
             _frameVelocity.y = _stats.JumpPower;
             Jumped?.Invoke();
+
+            jumpState = JumpState.Ascending;
+        }
+        private void TestJumpState()
+        {
+          bool endJump = _rb.velocity.y <= 0 || _endedJumpEarly;
+
+          if (jumpState == JumpState.Ascending && endJump)
+          {
+            StartCoroutine(HandleJumpTransition());
+          }
+        }
+        private IEnumerator HandleJumpTransition()
+        {
+          jumpState = JumpState.Transition;    
+          yield return new WaitForSeconds(_stats.JumpTransitionDuration);
+          jumpState = JumpState.Idle;  
         }
 
         #endregion
@@ -202,7 +236,7 @@ namespace TarodevController
             return;
           }
 
-          if(_stateController.GetCurrentState() == PlayerState.Crouching)
+          if(currentState == PlayerState.Crouching)
           {
             _frameVelocity.x = 0;
           }
@@ -241,9 +275,17 @@ namespace TarodevController
 
           var fallSpeed = _gravityScale;
           if (_endedJumpEarly || _frameVelocity.y < 0)
+          {
             fallSpeed *= _stats.JumpEndEarlyGravityModifier;
+          }
 
-            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, fallSpeed * Time.fixedDeltaTime);
+          if (jumpState == JumpState.Transition)
+          {
+            _frameVelocity.y = 0;
+            return;
+          }
+
+          _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, fallSpeed * Time.fixedDeltaTime);
         }
 
         #endregion
@@ -251,16 +293,43 @@ namespace TarodevController
         #region Dash
 
         public DashState dashState;
-        private bool _groundHitAfterDash = true; // not used for now
+        private bool _groundHitAfterDash = false; // not used for now
         public bool _dashReset = false;
         private bool _dashPressed = false;
         private float _timeDashWasPressed;
 
+        GameManager _gameManager;
+
         public bool isDashVertical; // just PlayerStateController should access it
+
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+          if (currentState != PlayerState.Dashing)
+            return;
+
+          if (col.CompareTag("Enemy"))
+          {
+            _dashReset = true;
+          }
+
+          if (col.CompareTag("BounceBack"))
+          {
+            _dashReset = true;
+            dashState = DashState.Ready;
+            _gravityScale = _stats.FallAcceleration;
+            CancelInvoke("DashCooldownHandler");
+            CancelInvoke("DashDurationHandler");
+            CancelInvoke("DashDelayedExecution");
+            CancelInvoke("DelayToReturnGravity");
+
+            float direction = _frameInput.Move.x != 0 ? -_frameInput.Move.x :  -Math.Sign(transform.localScale.x);
+            _frameVelocity = new Vector2(direction * 30, 20);
+            return;
+          }
+        }
 
         private void HandleDash()
         {
-          PlayerState currentState = _stateController.GetCurrentState();
           if (currentState == PlayerState.WallSliding || currentState == PlayerState.WallJumping)
           {
             _dashPressed = false;
@@ -274,7 +343,7 @@ namespace TarodevController
               {
                 _dashPressed = false;
                 _dashReset = false;
-                Time.timeScale = 1 - _stats.DashSlowOnTime;
+                jumpState = JumpState.Idle;
 
                 CancelInvoke("DashCooldownHandler");
                 CancelInvoke("DashDurationHandler");
@@ -287,20 +356,22 @@ namespace TarodevController
             break;
 
             case DashState.Dashing:
-              //_dashPressed = false;
+              _dashPressed = false;
             break;
 
             case DashState.Cooldown:
               //_dashPressed = false;
              if (_dashReset)
+             {
               dashState = DashState.Ready;
+             }
             break;
           }
         }
 
         private void DashCooldownHandler()
         {
-          if (dashState == DashState.Cooldown)
+          if (dashState == DashState.Cooldown && _grounded)
             dashState = DashState.Ready;
         }
 
@@ -324,9 +395,7 @@ namespace TarodevController
 
         private void DashDelayedExecution()
         {
-          CinemachineShake.Instance.ShakeCamera(_stats.DashShakeIntensity, _stats.DashShakeDuration);
           _gravityScale = 0;
-          Time.timeScale = 1f;
           dashState = DashState.Dashing;
 
           switch(_frameInput.Move)
@@ -367,7 +436,7 @@ namespace TarodevController
 
         private void WallSlide()
         {
-          if (_stateController.GetCurrentState() == PlayerState.WallSliding)
+          if (currentState == PlayerState.WallSliding)
             _frameVelocity.y = Mathf.Clamp(_frameVelocity.y, -_stats.WallSlidingSpeed, float.MaxValue);
         }
 
@@ -379,7 +448,7 @@ namespace TarodevController
             return;
           }
 
-          if (_stateController.GetCurrentState() == PlayerState.WallSliding)
+          if (currentState == PlayerState.WallSliding)
           {
             wallJumpDirection = -transform.localScale.x;
             wallJumpBufferTimer = _stats.WallJumpBuffer;
@@ -387,9 +456,8 @@ namespace TarodevController
             CancelInvoke(nameof(StopWallJumping));
           }
           else
-          {
             wallJumpBufferTimer -= Time.deltaTime;
-          }
+
 
           if (_jumpToConsume && wallJumpBufferTimer > 0f)
           {
@@ -399,7 +467,7 @@ namespace TarodevController
 
             if (transform.localScale.x != wallJumpDirection)
             {
-              Vector3 localScale = transform.localScale;
+              Vector2 localScale = transform.localScale;
               localScale.x *= -1f;
               transform.localScale = localScale;
             }
@@ -437,6 +505,13 @@ namespace TarodevController
       public event Action<bool, float> GroundedChanged;
       public event Action Jumped;
       public Vector2 FrameInput { get; }
+    }
+
+    public enum JumpState
+    {
+      Idle,
+      Ascending,
+      Transition,
     }
 
     public enum DashState

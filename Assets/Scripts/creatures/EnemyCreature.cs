@@ -16,22 +16,17 @@ public class EnemyCreature : MonoBehaviour
   protected Animator anim;
   protected Collider2D bodyHitboxCollider;
 
-  [SerializeField] protected bool notPassiveMob = true;
-  [SerializeField] protected float delayToReappear = 2f;
+  [SerializeField] protected bool passiveMob = true;
 
-  // shake and slow
-  [SerializeField] protected bool shakeAndSlowOnHit = false;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float slowOnKill = 0.3f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float slowDuration = 0.5f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float shakeIntensity = 5f;
-  [ShowIf("shakeAndSlowOnHit")] [SerializeField] protected float duration = 0.1f;
+  [SerializeField] protected bool reappear = false;
+  [ShowIf("reappear")] [SerializeField] protected float delayToReappear = 2f;
 
   // attack variables
-  [ShowIf("notPassiveMob")] [SerializeField] protected float attackSpeed = 5f;
-  [ShowIf("notPassiveMob")] [SerializeField] protected float attackDuration = 2f;
-  [ShowIf("notPassiveMob")] [SerializeField] protected float attackPreparationTime = 0.5f;
-  [ShowIf("notPassiveMob")] [SerializeField] protected float attackCooldown = 2f;
-  [ShowIf("notPassiveMob")] [HideInInspector] public bool isAttackOnCooldown;
+  [HideIf("passiveMob")] [SerializeField] protected float attackSpeed = 5f;
+  [HideIf("passiveMob")] [SerializeField] protected float attackDuration = 2f;
+  [HideIf("passiveMob")] [SerializeField] protected float attackPreparationTime = 0.5f;
+  [HideIf("passiveMob")] [SerializeField] protected float attackCooldown = 2f;
+  [HideIf("passiveMob")] [HideInInspector] public bool isAttackOnCooldown;
 
   // effects
   [SerializeField] private bool addHitEffect = false;
@@ -70,7 +65,7 @@ public class EnemyCreature : MonoBehaviour
 
   public virtual void HandleAttack()
   {
-    if (isAttacking || isAttackOnCooldown || isCreatureDead || !notPassiveMob)
+    if (isAttacking || isAttackOnCooldown || isCreatureDead || passiveMob)
       return;
 
     isAttacking = true;
@@ -108,18 +103,13 @@ public class EnemyCreature : MonoBehaviour
 
   protected virtual void OnCreatureHit()
   {
-    if (shakeAndSlowOnHit)
-    {
-      _gameManager.ShakeCamera(shakeIntensity, duration);
-      _gameManager.SlowTime(slowOnKill, slowDuration);
-    }
-
     anim.Play(DEATH_ANIMATION);
     isCreatureDead = true;
     bodyHitboxCollider.enabled = false;
-
     Invoke(nameof(DeactivateSpriteRenderer), deathAnimDuration);
-    Invoke(nameof(Reappear), delayToReappear);
+
+    if (reappear)
+      Invoke(nameof(Reappear), delayToReappear);
   }
 
   protected virtual void Reappear()
@@ -144,12 +134,16 @@ public class EnemyCreature : MonoBehaviour
       return;
     }
 
-    if (!playerIsAttacking && col.gameObject.tag == "Player")
-    {
+    if (!playerIsAttacking && col.gameObject.tag == "Player" && !passiveMob)
       DamagePlayer();
-      return;
-    }
+  }
 
+  protected virtual void OnTriggerStay2D(Collider2D col) 
+  {
+    bool playerIsAttacking = _playerStateController.GetCurrentState() == PlayerState.Dashing;
+
+    if (playerIsAttacking && col.gameObject.tag == "PlayerAttackHitbox")
+      OnCreatureHit();
   }
 
   protected virtual void InvertSprite()

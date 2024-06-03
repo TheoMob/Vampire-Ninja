@@ -8,6 +8,9 @@ TagManager:
   - Ground
   - Body
   - PlayerAttackHitbox
+  - Enemy
+  - EnemyHitbox
+  - BounceBack
   layers:
   - Default
   - TransparentFX
@@ -18,7 +21,7 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - EnemyAttackHitbox
+  - 
   - PlayerAttackHitBox
   - OneWayPlatform
   - 
@@ -66,6 +69,9 @@ TagManager:
   - name: midground-2
     uniqueID: 2173374107
     locked: 0
+  - name: midground-3
+    uniqueID: 1095406901
+    locked: 0
   - name: foreground-1
     uniqueID: 2971254457
     locked: 0
@@ -74,4 +80,7 @@ TagManager:
     locked: 0
   - name: foreground-3
     uniqueID: 3505969495
+    locked: 0
+  - name: Tilemap foreground
+    uniqueID: 1848698081
     locked: 0
