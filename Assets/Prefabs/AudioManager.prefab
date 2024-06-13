@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6344178704501324236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2365068104978939487}
+  - component: {fileID: 3029800758031476584}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2365068104978939487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344178704501324236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1314.6671, y: 536.7736, z: -3.1688464}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3029800758031476584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344178704501324236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 094ae452e1030834bb5e607d74d1a8e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: flute
+    clip: {fileID: 8300000, guid: a9c87822f1a0b384eb7329c4727c2dbf, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: MenuMusic
+    clip: {fileID: 8300000, guid: 43c7368447f52d64faa9fc8aebf41fbe, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    source: {fileID: 0}
+  - name: MusicaPlaceholder
+    clip: {fileID: 8300000, guid: cf05a5df13a9d6549aa50e498b954197, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    source: {fileID: 0}
+  - name: Kunai1
+    clip: {fileID: 8300000, guid: 5ae7d6346cab15346a78f72fce484530, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Kunai2
+    clip: {fileID: 8300000, guid: ec574c1e29ac55f48a3f595978bbbaa2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Kunai3
+    clip: {fileID: 8300000, guid: b03d215895a5fdb4386ab98afbb9a254, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Trap1
+    clip: {fileID: 8300000, guid: b57f4b5244c235242a3ad2f134469b5c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Trap2
+    clip: {fileID: 8300000, guid: 1e564effbbb23d44baf2eb99944cd9b5, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: 5c132c8fff05370479593d1dfd0649bb, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: MenuMusic2
+    clip: {fileID: 8300000, guid: 4fd1c0514b19d1043ac3a22497f4ea58, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    source: {fileID: 0}
+  - name: Footstep1
+    clip: {fileID: 8300000, guid: 1d1cf94110b5ad94aa310ebcfde83d07, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep2
+    clip: {fileID: 8300000, guid: 038d8d13da7c1dc4b88ff1925bceb329, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep3
+    clip: {fileID: 8300000, guid: a85a0a478c91b10499bd1dc971151852, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep4
+    clip: {fileID: 8300000, guid: 13b9f36787f94a943a3cb3470c88e35f, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep5
+    clip: {fileID: 8300000, guid: 25a6199153a93a045b5104a517eda66e, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep6
+    clip: {fileID: 8300000, guid: 9712e1706cf52a742b1cf63846706579, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep7
+    clip: {fileID: 8300000, guid: 2f388151c9a0b4642bc7b44262ed7e12, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Footstep8
+    clip: {fileID: 8300000, guid: 05a3d41e0041c2f499f56dec61f3c820, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  masterOutputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}

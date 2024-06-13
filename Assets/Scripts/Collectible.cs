@@ -9,7 +9,7 @@ public class Collectible : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = transform.GetChild(0).GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D other) 

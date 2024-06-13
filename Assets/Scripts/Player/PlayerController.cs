@@ -15,10 +15,12 @@ namespace TarodevController
     {
         [SerializeField] private ScriptableStats _stats;
         private PlayerState currentState;
+        private PlayerAnimationsHandler _animHandler;
 
         private PlayerStateController _stateController;
         private Rigidbody2D _rb;
         private CapsuleCollider2D _col;
+        private SpriteRenderer _spr;
 
         public FrameInput _frameInput;
         public Vector2 _frameVelocity;
@@ -37,9 +39,11 @@ namespace TarodevController
         private void Awake()
         {
           _stateController = GetComponent<PlayerStateController>();
+          _animHandler = GetComponent<PlayerAnimationsHandler>();
 
           _rb = GetComponent<Rigidbody2D>();
           _col = GetComponent<CapsuleCollider2D>();
+          _spr = GetComponent<SpriteRenderer>();
 
           _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
           _gravityScale = _stats.FallAcceleration;
@@ -48,36 +52,32 @@ namespace TarodevController
         }
         private void Update()
         {
-          if (currentState == PlayerState.Defeated)
+          _time += Time.deltaTime;
+          currentState = _stateController.GetCurrentState();
+
+          if (currentState == PlayerState.Defeated || currentState == PlayerState.CantMove)
             return;
 
-          currentState = _stateController.GetCurrentState();
-          _time += Time.deltaTime;
           GatherInput();
+          SlowHandler();
         }
 
         private void FixedUpdate()
         {
-          if (currentState == PlayerState.Defeated || currentState == PlayerState.Attacking)
+          if (currentState == PlayerState.CantMove)
+          {
+            _rb.velocity = Vector2.zero;
             return;
+          }
 
           CheckCollisions();
-
-          if (currentState != PlayerState.Dashing)
-          {
-            HandleGravity();
-            HandleCrouch();
-            HandleJump();
-
-            if (currentState != PlayerState.Crouching)
-            {
-              HandleDirection();
-              WallSlide();
-              WallJump();
-            }
-          }
+          HandleGravity();
+          HandleCrouch();
+          HandleJump();
+          HandleDirection();
+          WallSlide();
+          WallJump();
           HandleDash();
-
           ApplyMovement();
         }
         private void GatherInput()
@@ -115,6 +115,9 @@ namespace TarodevController
         private float _frameLeftGrounded = float.MinValue;
         private void CheckCollisions()
         {
+            if (currentState == PlayerState.Defeated)
+              return;
+      
             Physics2D.queriesStartInColliders = false;
 
             // Ground and Ceiling
@@ -166,6 +169,9 @@ namespace TarodevController
         private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime && currentState != PlayerState.Crouching;
         private void HandleJump()
         {
+          if (currentState == PlayerState.Dashing)
+            return;
+
           TestJumpState();
 
           _endedJumpEarly = ShouldEndJumpEarly();
@@ -209,6 +215,9 @@ namespace TarodevController
             Jumped?.Invoke();
 
             jumpState = JumpState.Ascending;
+
+            AudioManager sm = GameObject.Find("AudioManager").GetComponent<AudioManager>();
+            sm.Play("Jump");
         }
         private void TestJumpState()
         {
@@ -231,15 +240,14 @@ namespace TarodevController
         #region Crouch
         private void HandleCrouch()
         {
-          if (!_grounded || _frameVelocity.y >= 0)
-          {
+          if (currentState == PlayerState.Dashing || currentState == PlayerState.Defeated)
             return;
-          }
+
+          if (!_grounded || _frameVelocity.y >= 0)
+            return;
 
           if(currentState == PlayerState.Crouching)
-          {
             _frameVelocity.x = 0;
-          }
         }
 
         #endregion
@@ -247,6 +255,9 @@ namespace TarodevController
 
         private void HandleDirection()
         {
+          if (currentState == PlayerState.Dashing || currentState == PlayerState.Crouching)
+            return;
+
           if (_frameInput.Move.x == 0)
           {
             var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
@@ -267,6 +278,15 @@ namespace TarodevController
 
         private void HandleGravity()
         {
+          if (currentState == PlayerState.Dashing)
+            return;
+
+          if (currentState == PlayerState.Defeated)
+          {
+            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, _stats.FallAcceleration * Time.fixedDeltaTime);
+            return;
+          }
+
           if (_grounded && _frameVelocity.y <= 0f) // means it's grounded
           {
             _frameVelocity.y = _stats.GroundingForce;
@@ -274,12 +294,13 @@ namespace TarodevController
           }
 
           var fallSpeed = _gravityScale;
+          
           if (_endedJumpEarly || _frameVelocity.y < 0)
           {
             fallSpeed *= _stats.JumpEndEarlyGravityModifier;
           }
 
-          if (jumpState == JumpState.Transition)
+          if (jumpState == JumpState.Transition && currentState != PlayerState.WallJumping)
           {
             _frameVelocity.y = 0;
             return;
@@ -300,7 +321,28 @@ namespace TarodevController
 
         GameManager _gameManager;
 
-        public bool isDashVertical; // just PlayerStateController should access it
+        [HideInInspector] public bool isDashVertical; // just PlayerStateController should access it
+        [SerializeField] private float slowdownFactor = 0.05f;
+        [SerializeField] private float slowdownTransitionLength = .5f;
+
+        private bool doSlow = false;
+        private void SlowHandler()
+        {
+          if (Time.timeScale == 1f && !doSlow)
+            return;
+          
+          if (doSlow)
+          {
+            Time.timeScale = slowdownFactor;
+            Time.fixedDeltaTime = Time.timeScale * .02f;
+            doSlow = false; 
+          }
+          else
+          {
+            Time.timeScale += 1f/ slowdownTransitionLength * Time.unscaledDeltaTime;
+            Time.timeScale = Math.Clamp(Time.timeScale, 0f, 1f);
+          }
+        }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
@@ -310,6 +352,7 @@ namespace TarodevController
           if (col.CompareTag("Enemy"))
           {
             _dashReset = true;
+            doSlow = true;
           }
 
           if (col.CompareTag("BounceBack"))
@@ -322,15 +365,30 @@ namespace TarodevController
             CancelInvoke("DashDelayedExecution");
             CancelInvoke("DelayToReturnGravity");
 
-            float direction = _frameInput.Move.x != 0 ? -_frameInput.Move.x :  -Math.Sign(transform.localScale.x);
+            float direction = -_frameInput.Move.x;
+            if (direction == 0)
+              direction = _spr.flipX ? 1 : -1;
+
             _frameVelocity = new Vector2(direction * 30, 20);
             return;
           }
         }
 
+        private void OnTriggerStay2D(Collider2D col) 
+        {
+          if (currentState != PlayerState.Dashing || _dashReset)
+            return;
+          
+          if (col.CompareTag("Enemy"))
+          {
+            _dashReset = true;
+            doSlow = true;
+          }
+        }
+
         private void HandleDash()
         {
-          if (currentState == PlayerState.WallSliding || currentState == PlayerState.WallJumping)
+          if (currentState == PlayerState.WallSliding || currentState == PlayerState.WallJumping || currentState == PlayerState.Crouching || currentState == PlayerState.Defeated)
           {
             _dashPressed = false;
             return;
@@ -341,32 +399,38 @@ namespace TarodevController
             case DashState.Ready:
               if (_dashPressed)
               {
-                _dashPressed = false;
-                _dashReset = false;
-                jumpState = JumpState.Idle;
-
-                CancelInvoke("DashCooldownHandler");
-                CancelInvoke("DashDurationHandler");
-                CancelInvoke("DashDelayedExecution");
-                CancelInvoke("DelayToReturnGravity");
-                Invoke("DashCooldownHandler", _stats.DashCooldown);
-                Invoke("DashDurationHandler", _stats.DashDuration);
-                Invoke("DashDelayedExecution", _stats.DashInputDelay * Time.timeScale);
+                ExecuteDash();
               }
             break;
 
             case DashState.Dashing:
+            if (_dashPressed && _dashReset)
+              ExecuteDash();
+            else
               _dashPressed = false;
             break;
 
             case DashState.Cooldown:
-              //_dashPressed = false;
-             if (_dashReset)
-             {
-              dashState = DashState.Ready;
-             }
+             if (_dashPressed && _dashReset)
+               ExecuteDash();
             break;
           }
+        }
+
+        private void ExecuteDash()
+        {
+          _dashPressed = false;
+          _dashReset = false;
+          jumpState = JumpState.Idle;
+          _animHandler.SendDashAnimation();
+
+          CancelInvoke("DashCooldownHandler");
+          CancelInvoke("DashDurationHandler");
+          CancelInvoke("DashDelayedExecution");
+          CancelInvoke("DelayToReturnGravity");
+          Invoke("DashCooldownHandler", _stats.DashCooldown);
+          Invoke("DashDurationHandler", _stats.DashDuration);
+          Invoke("DashDelayedExecution", _stats.DashInputDelay * Time.timeScale);
         }
 
         private void DashCooldownHandler()
@@ -401,7 +465,8 @@ namespace TarodevController
           switch(_frameInput.Move)
           {
             case var _ when _frameInput.Move == Vector2.zero: // horizontal dashes without pressing any directions
-              _frameVelocity.x = Math.Sign(transform.localScale.x) * _stats.DashSpeed;
+              float direction = _spr.flipX ? -1 : 1;
+              _frameVelocity.x = direction * _stats.DashSpeed;
               _frameVelocity.y = 0;
               isDashVertical = false;
             break;
@@ -436,12 +501,21 @@ namespace TarodevController
 
         private void WallSlide()
         {
+          if (currentState == PlayerState.Dashing || currentState == PlayerState.Crouching)
+            return;
+
           if (currentState == PlayerState.WallSliding)
+          {
             _frameVelocity.y = Mathf.Clamp(_frameVelocity.y, -_stats.WallSlidingSpeed, float.MaxValue);
+            jumpState = JumpState.Idle;
+          }
         }
 
         private void WallJump()
         {
+          if (currentState == PlayerState.Dashing || currentState == PlayerState.Crouching)
+            return;
+
           if (_grounded)
           {
             wallJumpBufferTimer = 0f;
@@ -450,7 +524,7 @@ namespace TarodevController
 
           if (currentState == PlayerState.WallSliding)
           {
-            wallJumpDirection = -transform.localScale.x;
+            wallJumpDirection = _spr.flipX ? 1 : -1;
             wallJumpBufferTimer = _stats.WallJumpBuffer;
 
             CancelInvoke(nameof(StopWallJumping));
@@ -462,15 +536,10 @@ namespace TarodevController
           if (_jumpToConsume && wallJumpBufferTimer > 0f)
           {
             wallJumping = true;
+            _stateController.SetState(PlayerState.WallJumping);
+            
             _frameVelocity = new Vector2(wallJumpDirection * _stats.WallJumpPower.x, _stats.WallJumpPower.y);
             wallJumpBufferTimer = 0f;
-
-            if (transform.localScale.x != wallJumpDirection)
-            {
-              Vector2 localScale = transform.localScale;
-              localScale.x *= -1f;
-              transform.localScale = localScale;
-            }
           }
 
           Invoke(nameof(StopWallJumping), _stats.WallJumpDuration);
@@ -482,7 +551,35 @@ namespace TarodevController
         }
         #endregion
 
+        // #region Auxiliary Jump
+        // public bool auxiliaryJump = false;
+        // private void AuxiliaryJump()
+        // {
+        //   if (_jumpToConsume && wallJumpBufferTimer > 0f)
+        //   {
+        //     wallJumping = true;
+        //     _stateController.SetState(PlayerState.WallJumping);
+            
+        //     _frameVelocity = new Vector2(wallJumpDirection * _stats.WallJumpPower.x, _stats.WallJumpPower.y);
+        //     wallJumpBufferTimer = 0f;
+        //   }
+
+        //   Invoke(nameof(StopAuxiliaryJump), _stats.WallJumpDuration);
+        // }
+
+        // private void StopAuxiliaryJump()
+        // {
+        //   auxiliaryJump = false;
+        // }
+        // #endregion
+
         private void ApplyMovement() => _rb.velocity = _frameVelocity;
+
+        // private void ApplyMovement()
+        // {
+        //   Debug.Log(_frameVelocity);
+        //   _rb.velocity = _frameVelocity;
+        // }
 
 #if UNITY_EDITOR
         private void OnValidate()

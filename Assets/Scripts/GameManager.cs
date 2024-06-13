@@ -10,14 +10,14 @@ public class GameManager : MonoBehaviour
   //public static event Action PlayerDefeatedEvent;
   private PlayerStateController _playerStateController;
   private GameObject player;
-
-  [SerializeField] private float delayToRespawn; // separate it as a solo script
+  private CapsuleCollider2D playerCol;
 
   private void Awake()
   {
     player = GameObject.FindWithTag("Player");
     _playerStateController = player.GetComponent<PlayerStateController>();
-    lastCheckPointPosition = player.transform.position;
+    lastCheckpointPosition = player.transform.position;
+    playerCol = player.GetComponent<CapsuleCollider2D>();
   }
   private void Update()
   {
@@ -27,21 +27,30 @@ public class GameManager : MonoBehaviour
       SceneManager.LoadScene(currentSceneName);
     }
 
-    HandleSlowOnTime();
+    //HandleSlowOnTime();
   }
 
   #region playerDeath and Checkpoints
-  private Vector2 lastCheckPointPosition;
-  public void PlayerDefeated()
+  private Vector2 lastCheckpointPosition;
+  private int currentCheckpointIndex;
+
+  public void ReturnToCheckPoint(float respawnDelay)
   {
-    _playerStateController.isDefeated = true;
-    Invoke(nameof(ReturnPlayerToGame), delayToRespawn);
+    Invoke(nameof(TeleportToCheckpoint), respawnDelay);
   }
 
-  private void ReturnPlayerToGame()
+  private void TeleportToCheckpoint()
   {
-    player.transform.position = lastCheckPointPosition;
-    _playerStateController.isDefeated = false;
+    player.transform.position = lastCheckpointPosition;
+  }
+
+  public void RegisterNewCheckpoint(int cpIndex, Vector2 pos)
+  {
+    if (cpIndex < currentCheckpointIndex)
+      return;
+
+    lastCheckpointPosition = pos;
+    currentCheckpointIndex = cpIndex;
   }
   #endregion
 

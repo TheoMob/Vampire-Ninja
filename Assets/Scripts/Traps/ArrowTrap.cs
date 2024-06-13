@@ -20,7 +20,7 @@ public class ArrowTrap : Trap
     {
         isInCooldown = true;
         trapAnimator.Play(TRAP_READY);
-        Invoke(nameof(ShootArrow), delayToStartWorking);
+        Invoke(nameof(ShootArrow), trapAttackDelay);
     }
 
     private void ShootArrow()

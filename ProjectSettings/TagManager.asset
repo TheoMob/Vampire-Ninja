@@ -11,6 +11,9 @@ TagManager:
   - Enemy
   - EnemyHitbox
   - BounceBack
+  - DialogBox
+  - CameraLockedOnLee
+  - AudioManager
   layers:
   - Default
   - TransparentFX
@@ -21,10 +24,10 @@ TagManager:
   - Ground
   - Player
   - Enemy
-  - 
+  - TOCO
   - PlayerAttackHitBox
   - OneWayPlatform
-  - 
+  - ConfinedCamera
   - 
   - 
   - 
@@ -47,6 +50,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: background-0
+    uniqueID: 1921302901
     locked: 0
   - name: background-1
     uniqueID: 3631010647
