@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3029800758031476584}
   m_Layer: 0
   m_Name: AudioManager
-  m_TagString: Untagged
+  m_TagString: AudioManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Jump
     clip: {fileID: 8300000, guid: 5c132c8fff05370479593d1dfd0649bb, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
@@ -117,7 +117,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Footstep1
     clip: {fileID: 8300000, guid: 1d1cf94110b5ad94aa310ebcfde83d07, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
@@ -131,7 +131,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Footstep3
     clip: {fileID: 8300000, guid: a85a0a478c91b10499bd1dc971151852, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
@@ -166,6 +166,13 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Footstep8
     clip: {fileID: 8300000, guid: 05a3d41e0041c2f499f56dec61f3c820, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Whoosh
+    clip: {fileID: 8300000, guid: d85219207fda2d54c824551cc2ef1002, type: 3}
     volume: 1
     pitch: 1
     loop: 0

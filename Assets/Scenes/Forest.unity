@@ -4611,52 +4611,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.size
-      value: 19
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[8].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 5c132c8fff05370479593d1dfd0649bb, type: 3}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[18].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: d85219207fda2d54c824551cc2ef1002, type: 3}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[18].name
-      value: Whoosh
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[18].pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[8].volume
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[10].volume
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[12].volume
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[18].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3029800758031476584, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: sounds.Array.data[18].outputMixer
-      value: 
-      objectReference: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     - target: {fileID: 6344178704501324236, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
       propertyPath: m_Name
-      value: AudioManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 6344178704501324236, guid: 92b0a60585e16a04dabdbf56bfd6caae, type: 3}
-      propertyPath: m_TagString
       value: AudioManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
