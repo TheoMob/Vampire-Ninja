@@ -8,6 +8,7 @@ public class Trap : MonoBehaviour
     [SerializeField] protected float delayToStartWorking;
     [SerializeField] protected float trapAttackDelay;
     [SerializeField] protected float trapCooldown;
+    protected AudioManager _audioManager;
     protected bool isInCooldown = false;
     protected Animator trapAnimator;
 
@@ -20,6 +21,7 @@ public class Trap : MonoBehaviour
         StartCoroutine(InitialDelay());
 
         trapAnimator = GetComponent<Animator>();
+        _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
     }
 
     protected virtual void FixedUpdate()

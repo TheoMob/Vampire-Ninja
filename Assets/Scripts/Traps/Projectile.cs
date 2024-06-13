@@ -33,6 +33,9 @@ public class Projectile : MonoBehaviour
       transform.position += direction;
       col.enabled = false;
       InvokeRepeating("ProjectileDisappear", disappearAfterCollidingTime - 0.5f, .1f);
+
+      AudioManager _sm = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+      _sm.Play("Kunai2");
     }
   }
 

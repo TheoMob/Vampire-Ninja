@@ -23,6 +23,7 @@ public class MenuManager : MonoBehaviour
         // SetAvailableResolutions();
         // InitiateResolutionDropdown();
         _audioManager = FindObjectOfType<AudioManager>();
+        _audioManager.Play("MenuMusic2");
 
         soundAudioMixer.SetFloat("volume", 0);
         musicAudioMixer.SetFloat("volume", 0);
@@ -80,8 +81,8 @@ public class MenuManager : MonoBehaviour
      #endregion
     public void PressPlayButton()
     {
-        _audioManager.Stop("MenuMusic2");
-        _audioManager.Play("MusicaPlaceholder");
+        // _audioManager.Stop("MenuMusic2");
+        // _audioManager.Play("MusicaPlaceholder");
         SceneManager.LoadScene("Forest");
     }
 

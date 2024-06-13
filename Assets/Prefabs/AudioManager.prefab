@@ -68,43 +68,57 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Kunai1
     clip: {fileID: 8300000, guid: 5ae7d6346cab15346a78f72fce484530, type: 3}
-    volume: 1
-    pitch: 1
+    volume: 0.5
+    pitch: 0.65
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
   - name: Kunai2
     clip: {fileID: 8300000, guid: ec574c1e29ac55f48a3f595978bbbaa2, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
   - name: Kunai3
     clip: {fileID: 8300000, guid: b03d215895a5fdb4386ab98afbb9a254, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
-  - name: Trap1
+  - name: TrapReady
     clip: {fileID: 8300000, guid: b57f4b5244c235242a3ad2f134469b5c, type: 3}
-    volume: 1
+    volume: 0.5
     pitch: 1
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
-  - name: Trap2
+  - name: Spike1
+    clip: {fileID: 8300000, guid: beee143bebf29eb46b0b15e239b7f0f9, type: 3}
+    volume: 0.5
+    pitch: 0.8
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Spike2
     clip: {fileID: 8300000, guid: 1e564effbbb23d44baf2eb99944cd9b5, type: 3}
-    volume: 1
-    pitch: 1
+    volume: 0.3
+    pitch: 0.7
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    source: {fileID: 0}
+  - name: Spike3
+    clip: {fileID: 8300000, guid: 03b342be45aea57488beee192309caea, type: 3}
+    volume: 0.5
+    pitch: 0.8
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
   - name: Jump
     clip: {fileID: 8300000, guid: 5c132c8fff05370479593d1dfd0649bb, type: 3}
     volume: 0.5
-    pitch: 1
+    pitch: 0.75
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}
@@ -174,7 +188,7 @@ MonoBehaviour:
   - name: Whoosh
     clip: {fileID: 8300000, guid: d85219207fda2d54c824551cc2ef1002, type: 3}
     volume: 1
-    pitch: 1
+    pitch: 0.8
     loop: 0
     outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
     source: {fileID: 0}

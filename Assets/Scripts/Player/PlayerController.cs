@@ -17,6 +17,8 @@ namespace TarodevController
         private PlayerState currentState;
         private PlayerAnimationsHandler _animHandler;
 
+        private AudioManager _audioManager;
+
         private PlayerStateController _stateController;
         private Rigidbody2D _rb;
         private CapsuleCollider2D _col;
@@ -40,6 +42,8 @@ namespace TarodevController
         {
           _stateController = GetComponent<PlayerStateController>();
           _animHandler = GetComponent<PlayerAnimationsHandler>();
+          
+          _audioManager = GameObject.Find("AudioManager").GetComponent<AudioManager>();
 
           _rb = GetComponent<Rigidbody2D>();
           _col = GetComponent<CapsuleCollider2D>();
@@ -216,8 +220,7 @@ namespace TarodevController
 
             jumpState = JumpState.Ascending;
 
-            AudioManager sm = GameObject.Find("AudioManager").GetComponent<AudioManager>();
-            sm.Play("Jump");
+            _audioManager.Play("Jump");
         }
         private void TestJumpState()
         {
@@ -540,6 +543,8 @@ namespace TarodevController
             
             _frameVelocity = new Vector2(wallJumpDirection * _stats.WallJumpPower.x, _stats.WallJumpPower.y);
             wallJumpBufferTimer = 0f;
+            
+            _audioManager.Play("Jump");
           }
 
           Invoke(nameof(StopWallJumping), _stats.WallJumpDuration);

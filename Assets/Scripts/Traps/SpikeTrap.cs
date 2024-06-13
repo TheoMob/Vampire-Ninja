@@ -33,6 +33,8 @@ public class SpikeTrap : Trap
         isInCooldown = true;
         trapAnimator.Play(TRAP_READY);
         Invoke(nameof(spikeActivation), trapAttackDelay);
+
+        _audioManager.Play("TrapReady");
     }
 
     private void spikeActivation()
@@ -40,6 +42,8 @@ public class SpikeTrap : Trap
         trapCollider.enabled = true;;
         trapAnimator.Play(TRAP_ACTIVATED);
         Invoke(nameof(spikeDeactivation), trapAttackDuration);
+
+        _audioManager.Play("Spike2");
     }
 
     private void spikeDeactivation()

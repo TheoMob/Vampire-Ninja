@@ -37,6 +37,8 @@ public class ArrowTrap : Trap
         Rigidbody2D rb = arrow.GetComponent<Rigidbody2D>();
         rb.AddForce(direction * shootForce, ForceMode2D.Impulse);
 
+        _audioManager.Play("Kunai1");
+
         StartCoroutine(TrapCooldown());
     }
 }
