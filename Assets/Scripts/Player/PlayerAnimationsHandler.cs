@@ -16,7 +16,8 @@ public class PlayerAnimationsHandler : MonoBehaviour
   private const string PLAYER_JUMP_UP = "PlayerJumpUp";
   private const string PLAYER_JUMP_DOWN = "PlayerJumpDown";
   private const string PLAYER_JUMP_TRANSITION = "PlayerJumpTransition";
-  private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal";
+  //private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal";
+  private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal2";
   private const string PLAYER_DASH_VERTICAL = "PlayerDashVertical";
   private const string PLAYER_WALL_SLIDE = "PlayerWallSlide";
   private const string PLAYER_DEFEATED = "PlayerDefeated";
@@ -90,6 +91,7 @@ public class PlayerAnimationsHandler : MonoBehaviour
       case PlayerState.CantMove:
         currentAnimation = previousAnimation;
       break;
+      
       case PlayerState.Defeated:
         currentAnimation = PLAYER_DEFEATED;
       break;
@@ -148,7 +150,7 @@ public class PlayerAnimationsHandler : MonoBehaviour
 
   public void SendDashAnimation()
   {
-    if (_stateController.GetCurrentState() != PlayerState.Dashing)
+    if (_stateController.GetCurrentState() != PlayerState.Dashing || !useDashEffects)
       return;
 
     string currentAnimation = _stateController.IsDashVertical()? PLAYER_DASH_VERTICAL : PLAYER_DASH_HORIZONTAL;
@@ -157,7 +159,7 @@ public class PlayerAnimationsHandler : MonoBehaviour
     playerAnimator.Play(currentAnimation);
     HandleDashParticles();
   }
-  private void HandleDashParticles()
+  public void HandleDashParticles()
   {
     bool isDashing = _stateController.GetCurrentState() == PlayerState.Dashing;
     dashAfterImageObject.SetActive(isDashing);

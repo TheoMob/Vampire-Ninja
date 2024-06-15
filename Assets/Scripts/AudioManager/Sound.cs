@@ -15,6 +15,14 @@ public class Sound
     public bool loop;
 
     public AudioMixerGroup outputMixer;
+    
+    public SoundType soundType;
 
     [HideInInspector] public AudioSource source;
+
+    public enum SoundType
+    {
+        sound,
+        music,
+    }
 }

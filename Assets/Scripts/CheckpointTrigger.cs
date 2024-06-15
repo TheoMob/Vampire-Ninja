@@ -5,12 +5,11 @@ using UnityEngine;
 public class CheckpointTrigger : MonoBehaviour
 {
     [SerializeField] private int checkpointIndex;
-    [SerializeField] private bool hideSprite;
 
     private void Awake()
     {
         SpriteRenderer spr = GetComponent<SpriteRenderer>();
-        spr.enabled = !hideSprite;
+        spr.enabled = Application.isEditor;
     }
     private void OnTriggerEnter2D(Collider2D other) 
     {

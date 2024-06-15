@@ -32,6 +32,9 @@ public class PlayerCombatController : MonoBehaviour
 
   private void OnTriggerEnter2D(Collider2D col)
   {
+    if (_stateController.GetCurrentState() == PlayerState.Defeated)
+      return;
+      
     if (col.CompareTag("Hazards"))
     {
       PlayerLosesHealth(1);

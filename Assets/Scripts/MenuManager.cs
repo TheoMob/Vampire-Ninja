@@ -10,95 +10,54 @@ public class MenuManager : MonoBehaviour
 {
     public AudioMixer musicAudioMixer;
     public AudioMixer soundAudioMixer;
-
-    public AudioManager _audioManager;
-    public TMP_Dropdown resolutionDropdown;
-    public Toggle fullScreenToggle;
-
-    private Resolution[] resolutions;
-
-    private Vector2[] availableResolutions;
+    [HideInInspector]   public AudioManager _audioManager;
     void Start()
     {   
-        // SetAvailableResolutions();
-        // InitiateResolutionDropdown();
         _audioManager = FindObjectOfType<AudioManager>();
-        _audioManager.Play("MenuMusic2");
+        _audioManager.Play("MenuMusic2", false, Vector2.zero);
 
-        soundAudioMixer.SetFloat("volume", 0);
-        musicAudioMixer.SetFloat("volume", 0);
-
-        fullScreenToggle.isOn = Screen.fullScreen;
+        soundTextNumber = 50;
+        soundText.text = soundTextNumber.ToString() + "%";
+        musicTextNumber = 50;
+        musicText.text = musicTextNumber.ToString() + "%";
+        currentSoundVolume = -20;
+        currentMusicVolume = -20;
+        soundAudioMixer.SetFloat("volume", currentSoundVolume);
+        musicAudioMixer.SetFloat("volume", currentMusicVolume);
     }
 
-      #region resolutions dropdown
-    // private void SetAvailableResolutions()
-    // {
-    //     availableResolutions = new Vector2[5];
-    //     availableResolutions[0] = new Vector2(1920, 1080);
-    //     availableResolutions[1] = new Vector2(1366, 768);
-    //     availableResolutions[2] = new Vector2(1280, 1024);
-    //     availableResolutions[3] = new Vector2(1024, 768);
-    //     availableResolutions[4] = new Vector2(800, 600);
-    // }
-    // private void InitiateResolutionDropdown()
-    // {
-    //     resolutions = Screen.resolutions;
-    //     resolutionDropdown.ClearOptions();
-
-    //     List<string> options = new List<string>();
-
-    //     int currentResolutionIndex = 0;
-    //     for(int i = 0; i < resolutions.Length; i++)
-    //     {
-    //         Resolution resolutionSize = resolutions[i];
-
-    //         bool resolutionFound = false;
-    //         for(int j = 0; j < availableResolutions.Length; j++) // this is so only the selected resolutions appear, if this is removed Unity will list EVERY possible resolution
-    //         {
-    //             Vector2 testedResolution = availableResolutions[j];
-    //             if (resolutionSize.width == testedResolution.x && resolutionSize.height == testedResolution.y)
-    //             {
-    //                 resolutionFound = true;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (resolutionFound)
-    //         {
-    //             string optionText = resolutionSize.width + " x " + resolutionSize.height;
-    //             options.Add(optionText);
-
-    //             if (resolutionSize.width == Screen.currentResolution.width && resolutionSize.height == Screen.currentResolution.height)
-    //                 currentResolutionIndex = i;
-    //         }
-    //     }
-
-    //     resolutionDropdown.AddOptions(options);
-    //     resolutionDropdown.value = currentResolutionIndex;
-    //     resolutionDropdown.RefreshShownValue();
-    // }
-     #endregion
     public void PressPlayButton()
     {
-        // _audioManager.Stop("MenuMusic2");
-        // _audioManager.Play("MusicaPlaceholder");
+        _audioManager.Stop("MenuMusic2");
         SceneManager.LoadScene("Forest");
     }
 
-    public void PressExitButton()
+    private float currentSoundVolume;
+    private float soundTextNumber;
+    [SerializeField] private TextMeshProUGUI soundText;
+    public void SoundChanger(int modifier)
     {
-        Application.Quit();
+        _audioManager.Play("Kunai3", false, Vector2.zero);
+
+        soundTextNumber = soundTextNumber + modifier;
+        soundText.text = soundTextNumber.ToString() + "%";
+
+        currentSoundVolume = currentSoundVolume + modifier; 
+        soundAudioMixer.SetFloat("volume", currentSoundVolume);
     }
 
-    public void SoundSlider(float volume)
+    private float currentMusicVolume;
+    private float musicTextNumber;
+    [SerializeField] private TextMeshProUGUI musicText;
+    public void MusicChanger(int modifier)
     {
-        soundAudioMixer.SetFloat("volume", volume);
-    }
+        _audioManager.Play("Kunai3", false, Vector2.zero);
 
-    public void MusicSlider(float volume)
-    {
-        musicAudioMixer.SetFloat("volume", volume);
+        musicTextNumber = musicTextNumber + modifier;
+        musicText.text = musicTextNumber.ToString() + "%";
+
+        currentMusicVolume = currentMusicVolume + modifier; 
+        musicAudioMixer.SetFloat("volume", currentMusicVolume);
     }
 
     public void SetFullscreen(bool isFullscreen)
@@ -111,15 +70,10 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Toggle mediumResToggle;
     [SerializeField] Toggle lowResToggle;
 
-
-    public void SetResolution(int resolutionIndex)
-    {
-        Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-    }
-
     public void SetQuality (int qualityIndex)
     {
+        _audioManager.Play("Kunai3", false, Vector2.zero);
+
         switch(qualityIndex)
         {
             case 2:

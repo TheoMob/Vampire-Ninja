@@ -13,16 +13,17 @@ public class PlayerSoundHandler : MonoBehaviour
 
     public void playFootStepSound(int footStepIndex)
     {
-        audioManager.Play("Footstep" + footStepIndex);
+        audioManager.Play("Footstep" + footStepIndex, false, Vector2.zero);
     }
 
+    [SerializeField] private string jumpSound = "Jump1";
     public void playJumpSound()
     {
-        audioManager.Play("Jump");
+        audioManager.Play(jumpSound, false, Vector2.zero);
     }
 
     public void playWhooshSound()
     {
-        audioManager.Play("Whoosh");
+        audioManager.Play("Whoosh", false, Vector2.zero);
     }
 }

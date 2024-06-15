@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
+  private GameManager _gameManager;
   [SerializeField] bool deactivated = false;
   [SerializeField] float delayToStartWorking = 0f; // this is so platforms can have different timings from one another
   [SerializeField] private Vector2[] patrolPointGizmos;
@@ -37,16 +38,28 @@ public class MovingPlatform : MonoBehaviour
 
   private void Awake()
   {
-    StartCoroutine(InitialDelay()); // this is so platforms can have different timings from one another
-
+    _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+    
     platformCollider = GetComponent<BoxCollider2D>();
     patrolPoints = patrolPointGizmos; // patrolPointGizmos have local position, while patrolPoints have global positions
     for(int i = 0; i < patrolPointGizmos.Length; i++)
       patrolPoints[i] = new Vector2(patrolPointGizmos[i].x + transform.position.x, patrolPointGizmos[i].y + transform.position.y);
   }
 
-  private void FixedUpdate()
+  private void OnEnable()
   {
+    StartCoroutine(InitialDelay());
+    isInCooldown = false;
+  }
+
+  private void OnDisable() 
+  {
+    StopAllCoroutines();
+  }
+
+
+  private void FixedUpdate()
+  {   
     if (deactivated || isInCooldown)
       return;
 

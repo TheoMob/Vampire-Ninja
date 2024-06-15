@@ -1,32 +1,50 @@
 using System.Collections;
 using UnityEngine;
+using NaughtyAttributes;
 
 public class Trap : MonoBehaviour
 {
     [SerializeField] protected bool trapDisabled = false;
     [SerializeField] protected Direction attackDirection;
-    [SerializeField] protected float delayToStartWorking;
+    [SerializeField] protected bool externalActivation = false;
+    [HideIf(nameof(externalActivation))] [SerializeField] protected float delayToStartWorking;
     [SerializeField] protected float trapAttackDelay;
-    [SerializeField] protected float trapCooldown;
+    [HideIf(nameof(externalActivation))] [SerializeField] protected float trapCooldown;
     protected AudioManager _audioManager;
+    protected GameManager _gameManager;
     protected bool isInCooldown = false;
     protected Animator trapAnimator;
 
     protected const string TRAP_IDLE = "TrapIdle";
     protected const string TRAP_READY = "TrapReady";
     protected const string TRAP_ACTIVATED = "TrapAttack";
+    [SerializeField] protected Transform playerTransform;
 
     protected virtual void Awake()
     {
-        StartCoroutine(InitialDelay());
-
         trapAnimator = GetComponent<Animator>();
         _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+        _gameManager = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
+        playerTransform = GameObject.FindWithTag("Player").transform;
+    }
+
+    protected virtual void OnEnable()
+    {
+        if (externalActivation)
+            return;
+            
+        StartCoroutine(InitialDelay());
+        isInCooldown = false;
+    }
+
+    protected virtual void OnDisable() 
+    {
+        StopAllCoroutines();
     }
 
     protected virtual void FixedUpdate()
     {
-        if (trapDisabled || isInCooldown)
+        if (trapDisabled || isInCooldown || externalActivation)
             return;
         
         TrapFunction();

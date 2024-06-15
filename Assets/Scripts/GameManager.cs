@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
   private PlayerStateController _playerStateController;
   private GameObject player;
   private CapsuleCollider2D playerCol;
+  private AudioManager _audioManager;
 
   private void Awake()
   {
@@ -18,6 +19,9 @@ public class GameManager : MonoBehaviour
     _playerStateController = player.GetComponent<PlayerStateController>();
     lastCheckpointPosition = player.transform.position;
     playerCol = player.GetComponent<CapsuleCollider2D>();
+
+    _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+    _audioManager.StartMusicHandler();
   }
   private void Update()
   {
@@ -90,6 +94,12 @@ public class GameManager : MonoBehaviour
     private void EndSlow()
     {
       timeSlowed = false;
+    }
+
+    public bool TestIfItsOnScreen(Vector2 objectPosition, float limit)
+    {
+      Vector2 _vp = Camera.main.WorldToViewportPoint(objectPosition);
+      return _vp.x >= 0f && _vp.x <= limit && _vp.y >= 0f && _vp.y <= limit;
     }
   #endregion
 }

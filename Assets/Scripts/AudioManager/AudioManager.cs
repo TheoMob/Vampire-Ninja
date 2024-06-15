@@ -7,10 +7,10 @@ using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
-
     public static AudioManager instance;
 
     [SerializeField] private AudioMixerGroup masterOutputMixer;
+    [SerializeField] private AudioMixerGroup musicOutputMixer;
     void Awake()
     {
         if (instance == null)
@@ -37,9 +37,30 @@ public class AudioManager : MonoBehaviour
             else
                 s.source.outputAudioMixerGroup = masterOutputMixer;
         }
+
     }
 
-    public void Play (string soundName)
+    [SerializeField] private float distanceToSoundToWork = 285f;
+    public void Play (string soundName, bool checkForPlayerPosition, Vector2 soundPosition)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == soundName);
+        if (s == null)
+        {
+            Debug.LogWarning("AudioClip " + soundName + " was not been found!");
+            return;
+        }
+
+        if (!checkForPlayerPosition)
+            s.source.Play();
+        else
+        {
+            Vector2 playerPos = GameObject.FindWithTag("Player").transform.position;
+            if (Vector2.Distance(playerPos, soundPosition) <= distanceToSoundToWork)
+                s.source.Play();
+        }
+    }
+
+    public void PlaySimple(string soundName)
     {
         Sound s = Array.Find(sounds, sound => sound.name == soundName);
         if (s == null)
@@ -61,5 +82,47 @@ public class AudioManager : MonoBehaviour
         }
 
         s.source.Stop();
+    }
+
+
+    public int currentTrackIndex = 1;
+
+    public void StartMusicHandler()
+    {
+        StartCoroutine(MusicTimerHandler());
+    }
+
+    IEnumerator MusicTimerHandler()
+    {
+        switch(currentTrackIndex)
+        {
+            case 1:
+                Debug.Log("Now Playing Finalmusic1");
+                PlaySimple("FinalMusic1");
+                yield return new WaitForSeconds(25);
+            break;
+            case 2:
+                Debug.Log("Now Playing Finalmusic2");
+                PlaySimple("FinalMusic2");
+                yield return new WaitForSeconds(25);
+            break;
+            case 3:
+                Debug.Log("Now Playing Finalmusic3");
+                PlaySimple("FinalMusic3");
+                yield return new WaitForSeconds(25);
+            break;
+            case 4:
+                Debug.Log("Now Playing Finalmusic4");
+                PlaySimple("FinalMusic4");
+                yield return new WaitForSeconds(27);
+            break;
+            case 5:
+                Debug.Log("Now Playing Finalmusic5");
+                PlaySimple("FinalMusic5");
+                yield return new WaitForSeconds(110);
+            break;
+        }
+
+        StartCoroutine(MusicTimerHandler());
     }
 }

@@ -54,6 +54,7 @@ namespace TarodevController
 
           dashState = DashState.Ready;
         }
+
         private void Update()
         {
           _time += Time.deltaTime;
@@ -68,12 +69,6 @@ namespace TarodevController
 
         private void FixedUpdate()
         {
-          if (currentState == PlayerState.CantMove)
-          {
-            _rb.velocity = Vector2.zero;
-            return;
-          }
-
           CheckCollisions();
           HandleGravity();
           HandleCrouch();
@@ -220,7 +215,7 @@ namespace TarodevController
 
             jumpState = JumpState.Ascending;
 
-            _audioManager.Play("Jump");
+            _audioManager.Play("Jump1", false, Vector2.zero);
         }
         private void TestJumpState()
         {
@@ -289,6 +284,13 @@ namespace TarodevController
             _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, _stats.FallAcceleration * Time.fixedDeltaTime);
             return;
           }
+          
+          bool isPlatformCollisionOff = Physics2D.GetIgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("OneWayPlatform"));
+          if (isPlatformCollisionOff && _grounded)
+          {
+            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, _gravityScale * Time.fixedDeltaTime);
+            return;
+          }
 
           if (_grounded && _frameVelocity.y <= 0f) // means it's grounded
           {
@@ -327,8 +329,9 @@ namespace TarodevController
         [HideInInspector] public bool isDashVertical; // just PlayerStateController should access it
         [SerializeField] private float slowdownFactor = 0.05f;
         [SerializeField] private float slowdownTransitionLength = .5f;
-
         private bool doSlow = false;
+        [SerializeField] private float delayToNextDashReset = 0.3f; // this should be later added to the scriptableStats
+        private bool canResetDash = true;
         private void SlowHandler()
         {
           if (Time.timeScale == 1f && !doSlow)
@@ -352,29 +355,33 @@ namespace TarodevController
           if (currentState != PlayerState.Dashing)
             return;
 
+          if (!canResetDash)
+            return;
+
           if (col.CompareTag("Enemy"))
           {
-            _dashReset = true;
+            //_dashReset = true;
             doSlow = true;
+            StartCoroutine(nameof(handleDashResetAvailable));
           }
 
-          if (col.CompareTag("BounceBack"))
-          {
-            _dashReset = true;
-            dashState = DashState.Ready;
-            _gravityScale = _stats.FallAcceleration;
-            CancelInvoke("DashCooldownHandler");
-            CancelInvoke("DashDurationHandler");
-            CancelInvoke("DashDelayedExecution");
-            CancelInvoke("DelayToReturnGravity");
+          // if (col.CompareTag("BounceBack"))
+          // {
+          //   _dashReset = true;
+          //   dashState = DashState.Ready;
+          //   _gravityScale = _stats.FallAcceleration;
+          //   CancelInvoke("DashCooldownHandler");
+          //   CancelInvoke("DashDurationHandler");
+          //   CancelInvoke("DashDelayedExecution");
+          //   CancelInvoke("DelayToReturnGravity");
 
-            float direction = -_frameInput.Move.x;
-            if (direction == 0)
-              direction = _spr.flipX ? 1 : -1;
+          //   float direction = -_frameInput.Move.x;
+          //   if (direction == 0)
+          //     direction = _spr.flipX ? 1 : -1;
 
-            _frameVelocity = new Vector2(direction * 30, 20);
-            return;
-          }
+          //   _frameVelocity = new Vector2(direction * 30, 20);
+          //   return;
+          // }
         }
 
         private void OnTriggerStay2D(Collider2D col) 
@@ -382,11 +389,23 @@ namespace TarodevController
           if (currentState != PlayerState.Dashing || _dashReset)
             return;
           
+          if (!canResetDash)
+            return;
+          
           if (col.CompareTag("Enemy"))
           {
-            _dashReset = true;
+            //_dashReset = true;
             doSlow = true;
+            StartCoroutine(nameof(handleDashResetAvailable));
           }
+        }
+
+        private IEnumerator handleDashResetAvailable()
+        {
+          canResetDash = false;
+          yield return new WaitForSeconds(delayToNextDashReset);
+          canResetDash = true;
+          _dashReset = true;
         }
 
         private void HandleDash()
@@ -409,8 +428,6 @@ namespace TarodevController
             case DashState.Dashing:
             if (_dashPressed && _dashReset)
               ExecuteDash();
-            else
-              _dashPressed = false;
             break;
 
             case DashState.Cooldown:
@@ -426,6 +443,8 @@ namespace TarodevController
           _dashReset = false;
           jumpState = JumpState.Idle;
           _animHandler.SendDashAnimation();
+
+          _audioManager.Play("Whoosh", false, Vector2.zero);
 
           CancelInvoke("DashCooldownHandler");
           CancelInvoke("DashDurationHandler");
@@ -544,7 +563,7 @@ namespace TarodevController
             _frameVelocity = new Vector2(wallJumpDirection * _stats.WallJumpPower.x, _stats.WallJumpPower.y);
             wallJumpBufferTimer = 0f;
             
-            _audioManager.Play("Jump");
+            _audioManager.Play("Jump1", false, Vector2.zero);
           }
 
           Invoke(nameof(StopWallJumping), _stats.WallJumpDuration);
@@ -578,13 +597,19 @@ namespace TarodevController
         // }
         // #endregion
 
-        private void ApplyMovement() => _rb.velocity = _frameVelocity;
+        //private void ApplyMovement() => _rb.velocity = _frameVelocity;
 
-        // private void ApplyMovement()
-        // {
-        //   Debug.Log(_frameVelocity);
-        //   _rb.velocity = _frameVelocity;
-        // }
+        private void ApplyMovement()
+        {
+          Vector2 _finalFrameVelocity = _frameVelocity;
+          if (currentState == PlayerState.Defeated || currentState == PlayerState.CantMove)
+            _finalFrameVelocity = new Vector2(0, _frameVelocity.y);
+            
+          // if (currentState == PlayerState.CantMove)
+          //   _finalFrameVelocity = Vector2.zero;
+
+          _rb.velocity = _finalFrameVelocity;
+        }
 
 #if UNITY_EDITOR
         private void OnValidate()

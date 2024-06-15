@@ -14,6 +14,8 @@ TagManager:
   - DialogBox
   - CameraLockedOnLee
   - AudioManager
+  - BossManager
+  - EndCanvas
   layers:
   - Default
   - TransparentFX

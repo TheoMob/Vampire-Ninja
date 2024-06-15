@@ -9,6 +9,10 @@ public class Projectile : MonoBehaviour
   private Rigidbody2D rb;
   private BoxCollider2D col;
   private SpriteRenderer sprRenderer;
+
+  private float DelayToCountCollidingWithWall = 0.5f;
+  private float maxDurationAfterLaunch = 2f;
+  private bool considerCollidingToWall = false;
   [SerializeField] private float disappearAfterCollidingTime = 2f;
 
   private void Awake()
@@ -16,6 +20,22 @@ public class Projectile : MonoBehaviour
     rb = GetComponent<Rigidbody2D>();
     col = GetComponent<BoxCollider2D>();
     sprRenderer = GetComponent<SpriteRenderer>();
+
+    StartCoroutine(DelayHandler());
+    StartCoroutine(ProjectileExpire());
+  }
+
+  IEnumerator DelayHandler()
+  {
+    considerCollidingToWall = false;
+    yield return new WaitForSeconds(DelayToCountCollidingWithWall);
+    considerCollidingToWall = true;
+  }
+
+  IEnumerator ProjectileExpire()
+  {
+    yield return new WaitForSeconds(maxDurationAfterLaunch);
+    InvokeRepeating("ProjectileDisappear", disappearAfterCollidingTime - 0.5f, .1f);
   }
 
   private void OnTriggerEnter2D(Collider2D otherCollider)
@@ -28,6 +48,9 @@ public class Projectile : MonoBehaviour
 
     if (otherCollider.gameObject.tag == "Ground" || otherCollider.gameObject.tag == "Wall")
     {
+      if (!considerCollidingToWall)
+        return;
+        
       Vector3 direction = getDirection()*0.25f;
       rb.velocity = Vector2.zero;
       transform.position += direction;
@@ -35,7 +58,7 @@ public class Projectile : MonoBehaviour
       InvokeRepeating("ProjectileDisappear", disappearAfterCollidingTime - 0.5f, .1f);
 
       AudioManager _sm = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
-      _sm.Play("Kunai2");
+      _sm.Play("Kunai2", true, transform.position);
     }
   }
 

@@ -10,12 +10,15 @@ namespace IPlayerState
   {
     public PlayerState playerState;
     private PlayerController _playerMovementController;
+    private AudioManager _audioManager;
+    private PlayerAnimationsHandler _animationsHandler;
     public bool isDefeated = false;
     public bool cantMove = false;
     private CapsuleCollider2D _col;
     private Rigidbody2D _rb;
     private SpriteRenderer _spr;
     private GameManager _gameManager;
+    private BossManager _bossManager;
 
     [Header("Player Respawn Delay")]
     [SerializeField] private float respawnDelay;
@@ -23,11 +26,15 @@ namespace IPlayerState
     private void Awake()
     {
       _playerMovementController = GetComponent<PlayerController>();
+      _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+      _animationsHandler = GetComponent<PlayerAnimationsHandler>();
+
       _col = GetComponent<CapsuleCollider2D>();
       _rb = GetComponent<Rigidbody2D>();
       _spr = GetComponent<SpriteRenderer>();
 
-      _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+      _gameManager = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
+       _bossManager = GameObject.FindWithTag("BossManager").GetComponent<BossManager>();
 
       originalHitBoxOffset = _col.offset;
       originalHitBoxSize = _col.size;
@@ -172,12 +179,19 @@ namespace IPlayerState
     public void OnPlayerDefeated()
     {
         _col.enabled = false;
-        //_rb.isKinematic = true;
         _rb.velocity = Vector2.zero;
         _playerMovementController._frameVelocity = Vector2.zero;
         _playerMovementController.jumpState = JumpState.Idle;
+
         isDefeated = true;
-        _gameManager.ReturnToCheckPoint(respawnDelay);  
+        playerState = PlayerState.Defeated;
+        _animationsHandler.HandleDashParticles(); // so the dash particles dont stay on while the player is defeated
+        _gameManager.ReturnToCheckPoint(respawnDelay);
+        _audioManager.Play("Smoke3", false, Vector2.zero);
+
+        if (_bossManager.alreadyTriggered)
+          _bossManager.ResetBossFight();
+
         Invoke(nameof(ReturnPlayerToLife), respawnDelay);
     }
 
