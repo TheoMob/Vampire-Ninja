@@ -19,8 +19,8 @@ public class OneWayPlatform : MonoBehaviour
 
   private void Update()
   {
-    if (!Input.GetButtonDown("Jump") || !Input.GetButton("Jump"))
-      return;
+    // if (!Input.GetButtonDown("Jump") || !Input.GetButton("Jump"))
+    //   return;
       
     bool isTouchingPlatform = Physics2D.OverlapBox(platformCollider.bounds.center, platformCollider.size, 0, LayerMask.GetMask(PLAYER_LAYER));
     bool isPlatformCollisionOff = Physics2D.GetIgnoreLayerCollision(LayerMask.NameToLayer(PLAYER_LAYER), LayerMask.NameToLayer(PLATFORM_LAYER));

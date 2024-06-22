@@ -9,7 +9,7 @@ public class Collectible : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = transform.GetChild(0).GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D other) 
@@ -17,9 +17,12 @@ public class Collectible : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
         
+        AudioManager _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+        _audioManager.Play("Smoke3", false, Vector2.zero);
+
         animator.Play(COLLECT_ANIMATION);
-        float collectAnimationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke(nameof(DestroyCollectable), collectAnimationDuration);
+        //float collectAnimationDuration = animator.GetCurrentAnimatorStateInfo(0).length;
+        Invoke(nameof(DestroyCollectable), 0.9f);
     }
 
     private void DestroyCollectable()

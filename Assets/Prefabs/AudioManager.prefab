@@ -1,0 +1,227 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6344178704501324236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2365068104978939487}
+  - component: {fileID: 3029800758031476584}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: AudioManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2365068104978939487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344178704501324236}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1314.6671, y: 536.7736, z: -3.1688464}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3029800758031476584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6344178704501324236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 094ae452e1030834bb5e607d74d1a8e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: MenuMusic
+    clip: {fileID: 8300000, guid: 43c7368447f52d64faa9fc8aebf41fbe, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: Kunai1
+    clip: {fileID: 8300000, guid: 5ae7d6346cab15346a78f72fce484530, type: 3}
+    volume: 0.6
+    pitch: 0.8
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Kunai2
+    clip: {fileID: 8300000, guid: ec574c1e29ac55f48a3f595978bbbaa2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Kunai3
+    clip: {fileID: 8300000, guid: b03d215895a5fdb4386ab98afbb9a254, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: TrapReady
+    clip: {fileID: 8300000, guid: b57f4b5244c235242a3ad2f134469b5c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Spike2
+    clip: {fileID: 8300000, guid: 1e564effbbb23d44baf2eb99944cd9b5, type: 3}
+    volume: 0.5
+    pitch: 0.7
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Jump1
+    clip: {fileID: 8300000, guid: 5c132c8fff05370479593d1dfd0649bb, type: 3}
+    volume: 1
+    pitch: 0.75
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: MenuMusic2
+    clip: {fileID: 8300000, guid: 69342ff577a61234fb79bb49a961c601, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: Whoosh
+    clip: {fileID: 8300000, guid: d85219207fda2d54c824551cc2ef1002, type: 3}
+    volume: 1
+    pitch: 0.8
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: MainMusic
+    clip: {fileID: 8300000, guid: 5fe6dcacd52daba4c8749300eddfab15, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 1
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: Smoke3
+    clip: {fileID: 8300000, guid: 9ba63d0db30ea844c81c266f554bd47f, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Warning
+    clip: {fileID: 8300000, guid: 843fa500c12a3e84b8f49dd4a71968e1, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Soru
+    clip: {fileID: 8300000, guid: 5376e93348f5efa449ae7896b46bbe3c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Voice1
+    clip: {fileID: 8300000, guid: d2560dd43fe9e26418558ca2ae2475d2, type: 3}
+    volume: 0.2
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Voice2
+    clip: {fileID: 8300000, guid: d2560dd43fe9e26418558ca2ae2475d2, type: 3}
+    volume: 0.2
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Voice3
+    clip: {fileID: 8300000, guid: d2560dd43fe9e26418558ca2ae2475d2, type: 3}
+    volume: 0.2
+    pitch: 1.5
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: Voice4
+    clip: {fileID: 8300000, guid: d2560dd43fe9e26418558ca2ae2475d2, type: 3}
+    volume: 0.2
+    pitch: 1.5
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+    soundType: 0
+    source: {fileID: 0}
+  - name: FinalMusic1
+    clip: {fileID: 8300000, guid: 8f2511691d5350042ab75b98bf9972e3, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: FinalMusic2
+    clip: {fileID: 8300000, guid: 6f35aee05f001934fa2554f4eadcc0a4, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: FinalMusic3
+    clip: {fileID: 8300000, guid: 6556a9f357b96234fa3aa3274f8991a1, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: FinalMusic4
+    clip: {fileID: 8300000, guid: 7871f386d06529f429894a81d29550c9, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  - name: FinalMusic5
+    clip: {fileID: 8300000, guid: a9aa3f34677ad264499a3a9a04a3eec8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    outputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+    soundType: 1
+    source: {fileID: 0}
+  masterOutputMixer: {fileID: 24300002, guid: 8df97a497d2457548946f3617c4827e2, type: 2}
+  musicOutputMixer: {fileID: 24300002, guid: b615d038cc889bf45a104ec3c6bffc40, type: 2}
+  distanceToSoundToWork: 35
+  currentTrackIndex: 1

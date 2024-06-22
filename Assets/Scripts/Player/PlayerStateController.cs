@@ -10,25 +10,41 @@ namespace IPlayerState
   {
     public PlayerState playerState;
     private PlayerController _playerMovementController;
-    private PlayerCombatController _playerCombatController;
+    private AudioManager _audioManager;
+    private PlayerAnimationsHandler _animationsHandler;
     public bool isDefeated = false;
+    public bool cantMove = false;
     private CapsuleCollider2D _col;
     private Rigidbody2D _rb;
+    private SpriteRenderer _spr;
+    private GameManager _gameManager;
+    private BossManager _bossManager;
+
+    [Header("Player Respawn Delay")]
+    [SerializeField] private float respawnDelay;
 
     private void Awake()
     {
       _playerMovementController = GetComponent<PlayerController>();
-      _playerCombatController = GetComponent<PlayerCombatController>();
+      _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
+      _animationsHandler = GetComponent<PlayerAnimationsHandler>();
+
       _col = GetComponent<CapsuleCollider2D>();
       _rb = GetComponent<Rigidbody2D>();
+      _spr = GetComponent<SpriteRenderer>();
+
+      _gameManager = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
+       _bossManager = GameObject.FindWithTag("BossManager").GetComponent<BossManager>();
+
+      originalHitBoxOffset = _col.offset;
+      originalHitBoxSize = _col.size;
     }
 
     private void FixedUpdate()
     {
       playerState = RefreshState();
 
-      if (isDefeated)
-        _rb.velocity = Vector2.zero;
+      AdjustHitBoxWhenCrouched();
     }
 
     public PlayerState GetCurrentState()
@@ -41,7 +57,7 @@ namespace IPlayerState
       // add protections and verifications
       playerState = newState;
     }
-
+    
     public PlayerState RefreshState()
     {
       bool grounded = _playerMovementController._grounded;
@@ -49,15 +65,14 @@ namespace IPlayerState
       bool dashing = _playerMovementController.dashState == DashState.Dashing;
       bool wallJumping = _playerMovementController.wallJumping;
       bool isTouchingWall = CheckIfItsWalled();
-      bool isAttacking = _playerCombatController.isAttacking;
       Vector2 frameVelocity = _playerMovementController._frameVelocity;
       FrameInput frameInput = _playerMovementController._frameInput;
 
       if (isDefeated)
         return PlayerState.Defeated;
 
-      if (isAttacking)
-        return PlayerState.Attacking;
+      if (cantMove)
+        return PlayerState.CantMove;
 
       if (dashing)
         return PlayerState.Dashing;
@@ -82,16 +97,15 @@ namespace IPlayerState
 
     public bool canPlayerMove()
     {
-      if (playerState == PlayerState.Dashing || playerState == PlayerState.Attacking || playerState == PlayerState.Defeated || playerState == PlayerState.WallSliding)
-        return false;
-
-      return true;
+      return playerState != PlayerState.Dashing && playerState != PlayerState.Attacking && playerState != PlayerState.Defeated && playerState != PlayerState.WallSliding && playerState != PlayerState.CantMove;
     }
 
     public FrameInput GetFrameInput()
     {
       return _playerMovementController._frameInput;
     }
+
+    #region Dash and wallJump Checkers
 
     public bool IsDashVertical()
     {
@@ -103,15 +117,20 @@ namespace IPlayerState
       return _playerMovementController.dashState;
     }
 
+    public bool isDashReset()
+    {
+      return _playerMovementController._dashReset;
+    }
+
     public JumpState getJumpState()
     {
       return _playerMovementController.jumpState;
     }
-
-
     private bool CheckIfItsWalled()
     {
-      Vector2 lookingDirection = Vector2.right * Math.Sign(transform.localScale.x) * (_col.size.x / 1f);
+      float direction = _spr.flipX ? -1 : 1;
+      Vector2 lookingDirection = Vector2.right * direction * (_col.size.x / 1f);
+
       Vector2 middlePos = _col.bounds.center;
       Vector2 topPos = new Vector2(_col.bounds.center.x, _col.bounds.center.y + transform.localScale.y / 1.5f);
       Vector2 bottomPos = new Vector2(_col.bounds.center.x, _col.bounds.center.y - transform.localScale.y / 1.5f);
@@ -131,12 +150,63 @@ namespace IPlayerState
       Debug.DrawLine(bottomPos, bottomPos + lookingDirection, drawColor);
       #endif
       
-      return middleCheck && bottomCheck && topCheck;
+      //return middleCheck && bottomCheck && topCheck;
+      return middleCheck && bottomCheck;
     }
+    #endregion
+
+    #region Crouched Hitbox
+    private Vector2 originalHitBoxOffset;
+    private Vector2 originalHitBoxSize;
+    private Vector2 crouchedHitBoxOffset = new Vector2(0.02627944f, -0.3927892f);
+    private Vector2 crouchedHitBoxSize = new Vector2(0.8681107f, 1.409917f);
+    private void AdjustHitBoxWhenCrouched()
+    {
+      if (playerState == PlayerState.Crouching)
+      {
+        _col.size = crouchedHitBoxSize;
+        _col.offset = crouchedHitBoxOffset;
+      }
+      else
+      {
+        _col.size = originalHitBoxSize;
+        _col.offset = originalHitBoxOffset;
+      }
+    }
+    #endregion
+
+    #region PlayerDefeated
+    public void OnPlayerDefeated()
+    {
+        _col.enabled = false;
+        _rb.velocity = Vector2.zero;
+        _playerMovementController._frameVelocity = Vector2.zero;
+        _playerMovementController.jumpState = JumpState.Idle;
+
+        isDefeated = true;
+        playerState = PlayerState.Defeated;
+        _animationsHandler.HandleDashParticles(); // so the dash particles dont stay on while the player is defeated
+        _gameManager.ReturnToCheckPoint(respawnDelay);
+        _audioManager.Play("Smoke3", false, Vector2.zero);
+
+        if (_bossManager.alreadyTriggered)
+          _bossManager.ResetBossFight();
+
+        Invoke(nameof(ReturnPlayerToLife), respawnDelay);
+    }
+
+    private void ReturnPlayerToLife()
+    {
+      	_col.enabled = true;
+        //_rb.isKinematic = false;
+        isDefeated = false;
+    }
+    #endregion
 
     public enum PlayerState
     {
       Idle,
+      CantMove,
       Running,
       Crouching,
       Attacking,

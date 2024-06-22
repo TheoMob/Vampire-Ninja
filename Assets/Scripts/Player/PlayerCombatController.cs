@@ -8,31 +8,13 @@ using static IPlayerState.PlayerStateController;
 public class PlayerCombatController : MonoBehaviour
 {
   private PlayerStateController _stateController;
-  private GameManager _gameManager;
-  private Rigidbody2D rb;
-
   private int playerMaxHealth = 1;
   public int playerHealth;
-
-  [Header("Attack variables")]
-  public bool isAttacking;
-  [SerializeField] private float attackDuration = 1f;
-  [SerializeField] private float attackCoolDown = 1f;
-  private bool isAttackOnCooldown = false;
 
   private void Awake()
   {
     _stateController = GetComponent<PlayerStateController>();
-    rb = GetComponent<Rigidbody2D>();
-
-    _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-
     playerHealth = playerMaxHealth;
-  }
-
-  private void Update()
-  {
-
   }
 
   public void PlayerLosesHealth(int dmgPoints)
@@ -45,11 +27,14 @@ public class PlayerCombatController : MonoBehaviour
 
   private void PlayerDeath()
   {
-    _gameManager.PlayerDefeated();
+    _stateController.OnPlayerDefeated();
   }
 
   private void OnTriggerEnter2D(Collider2D col)
   {
+    if (_stateController.GetCurrentState() == PlayerState.Defeated)
+      return;
+      
     if (col.CompareTag("Hazards"))
     {
       PlayerLosesHealth(1);

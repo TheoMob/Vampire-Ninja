@@ -6,6 +6,7 @@ using System;
 
 public class EnemyCreatureDummy : EnemyCreature
 {
+  protected const string DUMMY_HIT_TEST = "DummyHitTest";
   protected const string DUMMY_HIT_ANIMATION_1 = "DummyHit1";
   protected const string DUMMY_HIT_ANIMATION_2 = "DummyHit2";
   protected const string DUMMY_HIT_ANIMATION_3 = "DummyHit3";
@@ -28,10 +29,11 @@ public class EnemyCreatureDummy : EnemyCreature
   {
     hitComboIndex += 1;
 
-    if (hitComboIndex % 3 == 0)
-      anim.Play(DUMMY_HIT_ANIMATION_2);
-    else
-      anim.Play(DUMMY_HIT_ANIMATION_1);
+    // if (hitComboIndex % 3 == 0)
+    //   anim.Play(DUMMY_HIT_ANIMATION_2);
+    // else
+    //   anim.Play(DUMMY_HIT_ANIMATION_1);
+    anim.Play(DUMMY_HIT_TEST);
 
     StartCoroutine(hitComboManager(hitComboIndex));
   }

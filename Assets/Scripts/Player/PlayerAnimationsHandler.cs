@@ -16,7 +16,8 @@ public class PlayerAnimationsHandler : MonoBehaviour
   private const string PLAYER_JUMP_UP = "PlayerJumpUp";
   private const string PLAYER_JUMP_DOWN = "PlayerJumpDown";
   private const string PLAYER_JUMP_TRANSITION = "PlayerJumpTransition";
-  private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal";
+  //private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal";
+  private const string PLAYER_DASH_HORIZONTAL = "PlayerDashHorizontal2";
   private const string PLAYER_DASH_VERTICAL = "PlayerDashVertical";
   private const string PLAYER_WALL_SLIDE = "PlayerWallSlide";
   private const string PLAYER_DEFEATED = "PlayerDefeated";
@@ -63,30 +64,34 @@ public class PlayerAnimationsHandler : MonoBehaviour
 
   private void InvertSprite()
   {
-    float scale = Input.GetAxisRaw("Horizontal");
-
-    if (scale == 0)
+    float playerInput = Input.GetAxisRaw("Horizontal");
+    if (playerInput == 0)
       return;
 
-    transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x) * scale, transform.localScale.y);
+    playerSR.flipX = playerInput < 0 ? true : false;
   }
 
   private void AnimateDashAvailability()
   {
-    if (_stateController.getDashState() == DashState.Cooldown)
+    if (_stateController.getDashState() == DashState.Cooldown && !_stateController.isDashReset())
       playerSR.color = Color.red;
     else
       playerSR.color = Color.white;
   }
 
+  private string previousAnimation = PLAYER_IDLE;
   private void AnimationChooser()
   {
     PlayerState currentState = _stateController.GetCurrentState();
     JumpState jumpState = _stateController.getJumpState();
-    String currentAnimation = PLAYER_IDLE;
+    string currentAnimation = PLAYER_IDLE;
 
     switch(currentState)
     {
+      case PlayerState.CantMove:
+        currentAnimation = previousAnimation;
+      break;
+      
       case PlayerState.Defeated:
         currentAnimation = PLAYER_DEFEATED;
       break;
@@ -135,11 +140,26 @@ public class PlayerAnimationsHandler : MonoBehaviour
       break;
     }
 
+
     playerAnimator.Play(currentAnimation);
+    playerAnimator.speed = currentState == PlayerState.CantMove ? 0 : 1;
+    previousAnimation = currentAnimation;
   }
 
   #region Effects
-  private void HandleDashParticles()
+
+  public void SendDashAnimation()
+  {
+    if (_stateController.GetCurrentState() != PlayerState.Dashing || !useDashEffects)
+      return;
+
+    string currentAnimation = _stateController.IsDashVertical()? PLAYER_DASH_VERTICAL : PLAYER_DASH_HORIZONTAL;
+
+    playerAnimator.Play(PLAYER_IDLE);
+    playerAnimator.Play(currentAnimation);
+    HandleDashParticles();
+  }
+  public void HandleDashParticles()
   {
     bool isDashing = _stateController.GetCurrentState() == PlayerState.Dashing;
     dashAfterImageObject.SetActive(isDashing);
@@ -152,7 +172,7 @@ public class PlayerAnimationsHandler : MonoBehaviour
     if (dashParticleRendered.material != dashMaterial)
       dashParticleRendered.material = dashMaterial;
 
-    dashParticleRendered.flip = transform.localScale.x < 0 ? Vector2.right : Vector2.zero;
+    dashParticleRendered.flip = playerSR.flipX ? Vector2.right : Vector2.zero;
   }
   #endregion
 }

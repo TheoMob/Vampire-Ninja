@@ -32,20 +32,24 @@ public class SpikeTrap : Trap
     {
         isInCooldown = true;
         trapAnimator.Play(TRAP_READY);
-        Invoke(nameof(spikeActivation), trapAttackDelay);
+
+        _audioManager.Play("TrapReady", true, transform.position);
+        
+        StartCoroutine(SpikeActivationHandler());
     }
 
-    private void spikeActivation()
+    IEnumerator SpikeActivationHandler()
     {
-        trapCollider.enabled = true;;
+        yield return new WaitForSeconds(trapAttackDelay);
+        trapCollider.enabled = true;
         trapAnimator.Play(TRAP_ACTIVATED);
-        Invoke(nameof(spikeDeactivation), trapAttackDuration);
-    }
 
-    private void spikeDeactivation()
-    {
+        _audioManager.Play("Spike2", true, transform.position);
+
+        yield return new WaitForSeconds(trapAttackDuration);
         trapCollider.enabled = false;
-        StartCoroutine(TrapCooldown());
         trapAnimator.Play(TRAP_IDLE);
+
+        StartCoroutine(TrapCooldown());
     }
 }
