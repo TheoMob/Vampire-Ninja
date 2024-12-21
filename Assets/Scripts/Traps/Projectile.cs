@@ -1,95 +1,42 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-  private Rigidbody2D rb;
-  private BoxCollider2D col;
-  private SpriteRenderer sprRenderer;
+  [SerializeField] private bool _isTrap = true;
+  private ShooterTrap _shooterTrap;
+  private BoxCollider2D _col;
+  private SpriteRenderer _spr;
+  private Rigidbody2D _rb;
 
-  private float DelayToCountCollidingWithWall = 0.5f;
-  private float maxDurationAfterLaunch = 2f;
-  private bool considerCollidingToWall = false;
-  [SerializeField] private float disappearAfterCollidingTime = 2f;
-
-  private void Awake()
+  private void Start()
   {
-    rb = GetComponent<Rigidbody2D>();
-    col = GetComponent<BoxCollider2D>();
-    sprRenderer = GetComponent<SpriteRenderer>();
+    if (_isTrap)
+      _shooterTrap = transform.parent.GetComponent<ShooterTrap>();
 
-    StartCoroutine(DelayHandler());
-    StartCoroutine(ProjectileExpire());
-  }
-
-  IEnumerator DelayHandler()
-  {
-    considerCollidingToWall = false;
-    yield return new WaitForSeconds(DelayToCountCollidingWithWall);
-    considerCollidingToWall = true;
-  }
-
-  IEnumerator ProjectileExpire()
-  {
-    yield return new WaitForSeconds(maxDurationAfterLaunch);
-    InvokeRepeating("ProjectileDisappear", disappearAfterCollidingTime - 0.5f, .1f);
+    _col = GetComponent<BoxCollider2D>();
+    _spr = GetComponent<SpriteRenderer>();
+    _rb = GetComponent<Rigidbody2D>();
   }
 
   private void OnTriggerEnter2D(Collider2D otherCollider)
   {
     if (otherCollider.gameObject.tag == "Player")
     {
-      Destroy(gameObject);
+      _col.enabled = false;
+      _spr.enabled =false;
+      _rb.velocity = Vector2.zero;
       return;
     }
 
     if (otherCollider.gameObject.tag == "Ground" || otherCollider.gameObject.tag == "Wall")
     {
-      if (!considerCollidingToWall)
-        return;
-        
-      Vector3 direction = getDirection()*0.25f;
-      rb.velocity = Vector2.zero;
-      transform.position += direction;
-      col.enabled = false;
-      InvokeRepeating("ProjectileDisappear", disappearAfterCollidingTime - 0.5f, .1f);
-
-      AudioManager _sm = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
-      _sm.Play("Kunai2", true, transform.position);
-    }
-  }
-
-  private void ProjectileDisappear()
-  {
-    float rateToDisappear = 0.5f / (1 / 0.1f);
-    Color newColor = sprRenderer.color;
-    newColor.a -= rateToDisappear;
-    sprRenderer.color = newColor;
-
-    if (sprRenderer.color.a <= 0.1f)
-    {
-      Destroy(gameObject);
-    }
-  }
-
-  private Vector3 getDirection()
-  {
-    if (Math.Abs(rb.velocity.x) >= Math.Abs(rb.velocity.y))
-    {
-      if (Math.Sign(rb.velocity.x) >= 0)
-        return Vector3.right;
-      else
-        return Vector3.left;
-    }
-    else
-    {
-      if (Math.Sign(rb.velocity.y) >= 0)
-        return Vector3.up;
-      else
-        return Vector3.down;
+      if (_isTrap)
+      {
+        _rb.velocity = Vector2.zero;
+        _col.enabled = false;
+        _shooterTrap.OnCollideWithWall(_spr);
+      }
     }
   }
 }

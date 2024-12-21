@@ -10,7 +10,7 @@ public class Trap : MonoBehaviour
     [HideIf(nameof(externalActivation))] [SerializeField] protected float delayToStartWorking;
     [SerializeField] protected float trapAttackDelay;
     [HideIf(nameof(externalActivation))] [SerializeField] protected float trapCooldown;
-    protected AudioManager _audioManager;
+    protected AudioManager _audioManager => AudioManager.instance;
     protected GameManager _gameManager;
     protected bool isInCooldown = false;
     protected Animator trapAnimator;
@@ -23,7 +23,6 @@ public class Trap : MonoBehaviour
     protected virtual void Awake()
     {
         trapAnimator = GetComponent<Animator>();
-        _audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
         _gameManager = GameObject.FindWithTag("GameController").GetComponent<GameManager>();
         playerTransform = GameObject.FindWithTag("Player").transform;
     }

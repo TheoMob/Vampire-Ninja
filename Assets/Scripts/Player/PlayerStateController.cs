@@ -9,11 +9,12 @@ namespace IPlayerState
   public class PlayerStateController : MonoBehaviour
   {
     public PlayerState playerState;
+    public String GroundType;
+    public bool isDefeated = false;
+    public bool cantMove = false;
     private PlayerController _playerMovementController;
     private AudioManager _audioManager;
     private PlayerAnimationsHandler _animationsHandler;
-    public bool isDefeated = false;
-    public bool cantMove = false;
     private CapsuleCollider2D _col;
     private Rigidbody2D _rb;
     private SpriteRenderer _spr;
@@ -47,6 +48,8 @@ namespace IPlayerState
       AdjustHitBoxWhenCrouched();
     }
 
+    #region Player State
+
     public PlayerState GetCurrentState()
     {
       return playerState;
@@ -65,8 +68,7 @@ namespace IPlayerState
       bool dashing = _playerMovementController.dashState == DashState.Dashing;
       bool wallJumping = _playerMovementController.wallJumping;
       bool isTouchingWall = CheckIfItsWalled();
-      Vector2 frameVelocity = _playerMovementController._frameVelocity;
-      FrameInput frameInput = _playerMovementController._frameInput;
+      PlayerInputManager.PlayerFrameInput frameInput = PlayerInputManager.FrameInput;
 
       if (isDefeated)
         return PlayerState.Defeated;
@@ -89,24 +91,19 @@ namespace IPlayerState
       if (grounded && !pressingDown && frameInput.Move.x != 0)
         return PlayerState.Running;
 
-      if (!grounded && !wallJumping)
+      if (!wallJumping && !grounded) 
         return PlayerState.Jumping;
 
       return PlayerState.Idle;
     }
+    #endregion
 
     public bool canPlayerMove()
     {
       return playerState != PlayerState.Dashing && playerState != PlayerState.Attacking && playerState != PlayerState.Defeated && playerState != PlayerState.WallSliding && playerState != PlayerState.CantMove;
     }
 
-    public FrameInput GetFrameInput()
-    {
-      return _playerMovementController._frameInput;
-    }
-
     #region Dash and wallJump Checkers
-
     public bool IsDashVertical()
     {
       return _playerMovementController.isDashVertical;

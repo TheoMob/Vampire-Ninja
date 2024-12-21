@@ -56,7 +56,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Vampire-Ninja-Ameizing-Games.sln",
+    "dotnet.defaultSolution": "Vampire-Ninja.sln",
     "git.autorefresh": false,
     "git.autoRepositoryDetection": false,
     "git.confirmEmptyCommits": false,
@@ -76,9 +76,9 @@
     "git.showCommitInput": false,
     "git.showInlineOpenFileAction": false,
     "git.showActionButton": {
-      "commit": false,
-      "publish": false,
-      "sync": false
+        "commit": false,
+        "publish": false,
+        "sync": false
     },
     "git.requireGitUserConfig": false,
     "git.optimisticUpdate": false,

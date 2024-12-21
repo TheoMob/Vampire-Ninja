@@ -39,9 +39,14 @@ public class MenuManager : MonoBehaviour
     {
         _audioManager.Play("Kunai3", false, Vector2.zero);
 
+        if (soundTextNumber + modifier > 100 || soundTextNumber + modifier < 0)
+            return;
+
         soundTextNumber = soundTextNumber + modifier;
+
         soundText.text = soundTextNumber.ToString() + "%";
 
+        modifier = modifier / 3;
         currentSoundVolume = currentSoundVolume + modifier; 
         soundAudioMixer.SetFloat("volume", currentSoundVolume);
     }
@@ -53,9 +58,13 @@ public class MenuManager : MonoBehaviour
     {
         _audioManager.Play("Kunai3", false, Vector2.zero);
 
+        if (musicTextNumber + modifier > 100 || musicTextNumber + modifier < 0)
+            return;
+
         musicTextNumber = musicTextNumber + modifier;
         musicText.text = musicTextNumber.ToString() + "%";
 
+        modifier = modifier / 3;
         currentMusicVolume = currentMusicVolume + modifier; 
         musicAudioMixer.SetFloat("volume", currentMusicVolume);
     }

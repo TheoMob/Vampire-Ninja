@@ -1,45 +1,68 @@
-using System.Collections;
-using System.Collections.Generic;
-using IPlayerState;
-using static IPlayerState.PlayerStateController;
 using UnityEngine;
-
 public class OneWayPlatform : MonoBehaviour
 {
-  private const string PLATFORM_LAYER = "OneWayPlatform";
-  private const string PLAYER_LAYER = "Player";
-  private PlayerStateController _playerStateController;
-  private BoxCollider2D platformCollider;
+  GameObject _player;
+  private CapsuleCollider2D _playerCol;
+  private BoxCollider2D _platformCol;
+  private bool _isTouchingPlatform;
 
-  private void Awake()
+  private void Start()
   {
-    _playerStateController =  GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStateController>();
-    platformCollider = GetComponent<BoxCollider2D>();
+    _player = GameObject.FindWithTag("Player");
+    _playerCol = _player.GetComponent<CapsuleCollider2D>();
+    _platformCol = GetComponent<BoxCollider2D>();
   }
 
   private void Update()
   {
-    // if (!Input.GetButtonDown("Jump") || !Input.GetButton("Jump"))
-    //   return;
-      
-    bool isTouchingPlatform = Physics2D.OverlapBox(platformCollider.bounds.center, platformCollider.size, 0, LayerMask.GetMask(PLAYER_LAYER));
-    bool isPlatformCollisionOff = Physics2D.GetIgnoreLayerCollision(LayerMask.NameToLayer(PLAYER_LAYER), LayerMask.NameToLayer(PLATFORM_LAYER));
-    bool turnPlatformOff = _playerStateController.GetFrameInput().Move.y < 0;
-
-    if (isTouchingPlatform && !isPlatformCollisionOff && turnPlatformOff)
+    bool _isVisible = false;
+    foreach(SpriteRenderer childSpr in GetComponentsInChildren<SpriteRenderer>())
     {
-      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PLAYER_LAYER), LayerMask.NameToLayer(PLATFORM_LAYER), true);
-      InvokeRepeating("TestIfisTouchingPlatform", 0f, 0.1f);
+      if (childSpr.isVisible)
+      {
+        _isVisible = true;
+        break;
+      }
     }
+
+    if (!_isVisible)
+    {
+      IgnoreCollision(false);
+      return;
+    }
+
+    float bottomPlayerPos = _playerCol.bounds.center.y - _playerCol.bounds.extents.y; // gets the lowest Y from the capsuleCollider (the feet)
+    float topPlayerPos = _playerCol.bounds.center.y + _playerCol.bounds.extents.y; // gets the highest Y from the capsuleCollider
+    float topPlatformPos = _platformCol.bounds.center.y - _platformCol.bounds.extents.y;
+    bool touchingPlatform = Physics2D.BoxCast(_platformCol.bounds.center, _platformCol.bounds.size, 0f, Vector2.up, .1f, LayerMask.GetMask("Player"));
+
+    if (topPlayerPos <= topPlatformPos || !touchingPlatform) // if the player is completely below the platform, turn the collision on
+    {
+      IgnoreCollision(false);
+      return;
+    }
+
+    if (bottomPlayerPos >= topPlatformPos && PlayerInputManager.FrameInput.Move.y < 0 && _isTouchingPlatform)
+      IgnoreCollision(true);
   }
 
-  private void TestIfisTouchingPlatform() // this exist so each individual platform test it's on collision, if it was on update every instance of oneWayPlatform would try to change the layer individually, creating a buggy mess
+  private void IgnoreCollision(bool setActive)
+  {  
+    Physics2D.IgnoreCollision(_playerCol, _platformCol, setActive);
+  }
+
+  void OnCollisionEnter2D(Collision2D col)
   {
-    bool isTouchingPlatform = Physics2D.OverlapBox(platformCollider.bounds.center, platformCollider.size, 0, LayerMask.GetMask(PLAYER_LAYER));
-    if (!isTouchingPlatform)
-    {
-      Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(PLAYER_LAYER), LayerMask.NameToLayer(PLATFORM_LAYER), false);
-      CancelInvoke("TestIfisTouchingPlatform");
-    }
+    if (col.gameObject.tag != "Player")
+      return;
+    
+    _isTouchingPlatform = true;  
+  }
+  void OnCollisionExit2D(Collision2D col)
+  {
+    if (col.gameObject.tag != "Player")
+      return;
+
+    _isTouchingPlatform = false;
   }
 }

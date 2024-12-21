@@ -28,7 +28,6 @@ public class PlayerMovementController : MonoBehaviour
         _stateController = GetComponent<PlayerStateController>();
         playerRb = GetComponent<Rigidbody2D>();
         bodyCollider = GetComponent<CapsuleCollider2D>();
-        _gravityScale = _stats.FallAcceleration;
     }
 
     private void Update()
@@ -179,7 +178,6 @@ public class PlayerMovementController : MonoBehaviour
     #endregion
 
     #region Gravity
-    private float _gravityScale;
 
     private void HandleGravity()
     {
